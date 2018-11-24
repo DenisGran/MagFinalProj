@@ -19,8 +19,16 @@ namespace Samung_Alpha
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Form1.password = textBox2.Text.ToString();
-            this.Close();
+            if (string.IsNullOrWhiteSpace(textBox2.Text))
+            {
+                MessageBox.Show("Can't login without password");
+            }
+            else
+            {
+                Form1.id = textBox1.Text.ToString();
+                Form1.password = textBox2.Text.ToString();
+                this.Close();
+            }
         }
     }
 }

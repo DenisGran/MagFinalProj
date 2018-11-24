@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Media;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -19,12 +20,20 @@ namespace Samung_Alpha
             IPEndPoint(IPAddress.Parse("127.0.0.1"), 1450);
         public static NetworkStream clientStream;
         public static string password;
+        public static string id;
         public static string user2;
 
+        public static void playsound(int code)
+        {
+                SoundPlayer simpleSound = new SoundPlayer(@"C:\\Users\\magshimim\\Downloads\\0.olololo ah sheli.wav");
+                simpleSound.Play();
+        }
 
         public Form1()
         {
             InitializeComponent();
+            button1.Enabled = false;
+            playsound(1);
         }
 
         public static void startCon()
@@ -36,8 +45,9 @@ namespace Samung_Alpha
 
         public static void ConToUser()
         {
-            string con = "con";
-            string user2;
+            byte[] buffer = new ASCIIEncoding().GetBytes("con,"+user2);
+            clientStream.Write(buffer, 0, buffer.Length);
+            clientStream.Flush();
 
         }
         /*
@@ -60,7 +70,9 @@ namespace Samung_Alpha
             f.ShowDialog();
             if (user2 != null)
             {
-                    1
+                label3.Text = "Connected to:" + user2.ToUpper();
+                button1.Enabled = false;
+                ConToUser();
             }
         }
 
@@ -68,9 +80,12 @@ namespace Samung_Alpha
         {
             Form3 f = new Form3();
             f.ShowDialog();
+            label2.Text = "Logged in as:" + id;
             if(password != null)
             {
                 button2.Enabled = false;
+                button1.Enabled = true;
+                startCon();
             }
         }
 
