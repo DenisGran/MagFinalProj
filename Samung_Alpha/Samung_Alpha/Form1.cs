@@ -25,8 +25,7 @@ namespace Samung_Alpha
 
         public static void playsound(int code)
         {
-                SoundPlayer simpleSound = new SoundPlayer(@"C:\\Users\\magshimim\\Downloads\\0.olololo ah sheli.wav");
-                simpleSound.Play();
+
         }
 
         public Form1()
