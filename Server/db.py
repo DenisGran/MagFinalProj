@@ -6,12 +6,17 @@ class my_DB: #FDatabase = File Database
 
 	__mutex = Lock()
 
-	def check_user_exists(self, uid):
-		'''Checks if user is already in the db'''
+	def check_user_details(self, uid, *password):
+		'''This function checks if the given details are correct'''
 
 		res = False
-		print("Searching user", uid)
-		result = self.__cursor.execute('select 1 from users where uid="' + uid + '";')
+		if(password): #If the password is given we search for uid and password
+			given_password = password[0] #Doing this because the password is passed as tuple
+			print("Searching account [ " + uid + " , " + given_password + " ]")
+			result = self.__cursor.execute('select 1 from users where uid="' + uid + '" and password="' + given_password + '";')
+		else: #If password isn't given we just search for the uid
+			print("Searching user", uid)
+			result = self.__cursor.execute('select 1 from users where uid="' + uid + '";')
 		if(result.fetchone()): #If the result isn't nontype the user exists
 			res = True
 		return res
@@ -20,12 +25,12 @@ class my_DB: #FDatabase = File Database
 		'''Adds/Updates a user in the database'''
 
 		self.__mutex.acquire() #Locking the MUTEX
-		if(self.check_user_exists(uid)):
+		if(self.check_user_details(uid)):
 			print("User already exists, updating details")
-			#target_port=6665 where uid="123TEsT";
 			try:
 				self.__cursor.execute('update users set password="' + password + '",curr_ip="' + curr_IP + '",target_port=' + target_port + ' where uid="' + uid + '";')
 				self.__connection.commit(); #Applying changes
+				print("User [" + uid + "] details updated")
 			except Exception as e:
 				print("Something went wrong... couldn't add user to DB. Details:\n", str(e))
 		else:
@@ -59,15 +64,13 @@ class my_DB: #FDatabase = File Database
 
 	def __init__(self):
 		'''Constructor'''
-
 		self.__name = "ourdatabase.db"
-		self.__dbStructure = {"uid":"", "password":"", "curr_IP":"", "target_port" :"", "type":""}
-		self.__connection = sqlite3.connect(self.__name)
+		self.__connection = sqlite3.connect(self.__name, check_same_thread=False)
 		self.__cursor = self.__connection.cursor()
 		self.__check_if_table_exist()
 
 		#Structure explanation:
-		#UID= Unique user id| password= MD5 hash of user's password| curr_ip= Current user's ip to connect| target_port= Current user's port to connect| type= professional/private
+		#UID= Unique user detail| password= MD5 hash of user's password| curr_ip= Current user's ip to connect| target_port= Current user's port to connect| type= professional/private
 
 	def __del__(self):
 		'''Deconstructor'''
