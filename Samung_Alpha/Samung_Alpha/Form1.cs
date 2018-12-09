@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Management;
 
 namespace Samung_Alpha
 {
@@ -25,17 +26,52 @@ namespace Samung_Alpha
         public static string id;
         public static string user2;
 
-        public static void playsound(int code)
+
+        public static void GetID()
         {
-            System.Media.SoundPlayer player = new System.Media.SoundPlayer(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"resources\mine.wav"));
-            player.Play();
+            string x = "";
+            ManagementObjectSearcher myProcessorObject = new ManagementObjectSearcher("select * from Win32_Processor");
+            ManagementObjectSearcher objvide = new ManagementObjectSearcher("select * from Win32_VideoController");
+            foreach (ManagementObject obj in myProcessorObject.Get())
+            {
+                if (obj["Name"].ToString().Contains("Intel"))
+                    x = "I";
+                else
+                    x = "A";
+            }
+
+            foreach(ManagementObject obj in objvide.Get())
+            {
+                if (obj["Name"].ToString().Contains("Intel"))
+                    x = x + "I";
+                else if (obj["Name"].ToString().Contains("Nvidia"))
+                    x = x + "N";
+                else if (obj["Name"].ToString().Contains("AMD"))
+                    x = x + "A";
+
+            }
+
+            foreach (DriveInfo drive in DriveInfo.GetDrives())
+            {
+                if (drive.IsReady && drive.Name == "C:\\")
+                {
+                    x = x + (drive.TotalFreeSpace / 100000).ToString();
+                }
+            }
+
+            Random rnd = new Random();
+            int rand = rnd.Next(1000, 10000); // creates a number between 1 and 12
+            x = x + rand.ToString();
+
+            id = x;
+
+
         }
 
         public Form1()
         {
             InitializeComponent();
             button1.Enabled = false;
-            playsound(1);
         }
 
         public static void startCon()
@@ -45,6 +81,13 @@ namespace Samung_Alpha
 
         }
 
+        public static void SignIn()
+        {
+            byte[] buffer = new ASCIIEncoding().GetBytes("sgin," + id + "," + password);
+            clientStream.Write(buffer, 0, buffer.Length);
+            clientStream.Flush();
+        }
+
         public static void ConToUser()
         {
             byte[] buffer = new ASCIIEncoding().GetBytes("con,"+user2);
@@ -52,6 +95,15 @@ namespace Samung_Alpha
             clientStream.Flush();
 
         }
+
+        public static void ChangePass()
+        {
+            byte[] buffer = new ASCIIEncoding().GetBytes("nps," + id + "," + password);
+            clientStream.Write(buffer, 0, buffer.Length);
+            clientStream.Flush();
+        }
+
+
         /*
             byte[] buffer = new ASCIIEncoding().GetBytes("Hello Server!");
             clientStream.Write(buffer, 0, buffer.Length);
@@ -88,11 +140,26 @@ namespace Samung_Alpha
                 button2.Enabled = false;
                 button1.Enabled = true;
                 startCon();
+                SignIn();
             }
         }
 
         private static void EnableForm()
         {
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+            if (id != null)
+            {
+                Form4 f = new Form4();
+                f.Show();
+            }
+            else
+            {
+                MessageBox.Show("to change the password, please login");
+            }
+
         }
     }
 }
