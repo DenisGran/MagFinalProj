@@ -71,7 +71,8 @@ namespace Samung_Alpha
         public Form1()
         {
             InitializeComponent();
-            button1.Enabled = false;
+            ConnectButton.Enabled = false;
+            GetID();
         }
 
         public static void startCon()
@@ -125,24 +126,11 @@ namespace Samung_Alpha
             if (user2 != null)
             {
                 label3.Text = "Connected to:" + user2.ToUpper();
-                button1.Enabled = false;
+                ConnectButton.Enabled = false;
                 ConToUser();
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            Form3 f = new Form3();
-            f.ShowDialog();
-            label2.Text = "Logged in as:" + id;
-            if(password != null)
-            {
-                button2.Enabled = false;
-                button1.Enabled = true;
-                startCon();
-                SignIn();
-            }
-        }
 
         private static void EnableForm()
         {
@@ -160,6 +148,32 @@ namespace Samung_Alpha
                 MessageBox.Show("to change the password, please login");
             }
 
+        }
+
+        private void SignInButton_Click(object sender, EventArgs e)
+        {
+            Form3 f = new Form3();
+            f.ShowDialog();
+            label2.Text = "Logged in as:" + id;
+            if (password != null)
+            {
+                SignInButton.Enabled = false;
+                ConnectButton.Enabled = true;
+                startCon();
+                SignIn();
+            }
+        }
+
+        private void ConnectButton_Click(object sender, EventArgs e)
+        {
+            Form2 f = new Form2();
+            f.ShowDialog();
+            if (user2 != null)
+            {
+                label3.Text = "Connected to:" + user2.ToUpper();
+                ConnectButton.Enabled = false;
+                ConToUser();
+            }
         }
     }
 }

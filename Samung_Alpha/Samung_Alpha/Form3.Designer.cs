@@ -54,9 +54,9 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(25, 91);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(23, 16);
+            this.label2.Size = new System.Drawing.Size(34, 16);
             this.label2.TabIndex = 1;
-            this.label2.Text = "ID";
+            this.label2.Text = "UID";
             // 
             // label3
             // 
@@ -102,7 +102,6 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::Samung_Alpha.Properties.Resources.bestimage;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(398, 261);
             this.Controls.Add(this.button1);

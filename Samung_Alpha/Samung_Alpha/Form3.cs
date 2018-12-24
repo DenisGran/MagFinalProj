@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,7 +16,6 @@ namespace Samung_Alpha
         public Form3()
         {
             InitializeComponent();
-            Form1.GetID();
             textBox1.Text = Form1.id;
         }
 
@@ -27,7 +27,7 @@ namespace Samung_Alpha
             }
             else
             {
-                Form1.id = textBox1.Text.ToString();
+                    Form1.id = textBox1.Text.ToString();
                 Form1.password = textBox2.Text.ToString();
                 this.Close();
             }
