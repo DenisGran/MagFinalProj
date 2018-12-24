@@ -15,8 +15,7 @@ namespace Samung_Alpha
         public Form3()
         {
             InitializeComponent();
-            Form1.GetID();
-            textBox1.Text = Form1.id;
+            textBox1.Text = Form1.getId();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -27,9 +26,14 @@ namespace Samung_Alpha
             }
             else
             {
-                Form1.id = textBox1.Text.ToString();
-                Form1.password = textBox2.Text.ToString();
-                this.Close();
+                if (!Form1.SignIn(textBox2.Text.ToString())) //If it didn't login
+                {
+                    MessageBox.Show("Couldn't login. Please try again.");
+                }
+                else
+                { //If we logged in just close the form and go back to the main screen
+                    this.Close();
+                }
             }
         }
     }

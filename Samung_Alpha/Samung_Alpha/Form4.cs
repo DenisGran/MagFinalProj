@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Samung_Alpha
@@ -19,11 +12,10 @@ namespace Samung_Alpha
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text == Form1.password)
+            if (Form1.ChangePass(textBox1.Text, textBox2.Text))
             {
-                Form1.password = textBox2.Text;
                 MessageBox.Show("Password Change Succesful");
-                Form1.ChangePass();
+                this.Close();
             }
             else
             {

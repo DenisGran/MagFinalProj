@@ -13,23 +13,39 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Management;
+using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace Samung_Alpha
 {
     public partial class Form1 : Form
     {
+        // These are for moving the application from the bar
+        public const int WM_NCLBUTTONDOWN = 0xA1;
+        public const int HT_CAPTION = 0x2;
+        [DllImportAttribute("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        [DllImportAttribute("user32.dll")]
+        public static extern bool ReleaseCapture();
+        // End of variables for moving the application
+
         public static TcpClient client = new TcpClient();
         public static IPEndPoint serverEndPoint = new
             IPEndPoint(IPAddress.Parse("127.0.0.1"), 1450);
         public static NetworkStream clientStream;
-        public static string password;
-        public static string id;
-        public static string user2;
+        private static string password = null;
+        private static string id = null;
+        private static string user2 = null;
+        public static bool loggedIn = false;
+        public static bool isConnectedToUser = false;
+        public static bool isConnectedToServer = false;
+        private const string successCode = "01";
+        private const string failureCode = "02";
 
-
-        public static void GetID()
+        private static void createID()
         {
             string x = "";
+
             ManagementObjectSearcher myProcessorObject = new ManagementObjectSearcher("select * from Win32_Processor");
             ManagementObjectSearcher objvide = new ManagementObjectSearcher("select * from Win32_VideoController");
             foreach (ManagementObject obj in myProcessorObject.Get())
@@ -64,43 +80,110 @@ namespace Samung_Alpha
             x = x + rand.ToString();
 
             id = x;
-
-
         }
 
         public Form1()
         {
             InitializeComponent();
-            button1.Enabled = false;
+            connectBtn.Enabled = false;
+            connectBtn.Visible = false;
+            changePasswordLabel.Visible = false;
         }
 
-        public static void startCon()
-        {
-            client.Connect(serverEndPoint);
-            clientStream = client.GetStream();
-
+        private static void startCon()
+        { //This function connects to the server (creates socket)
+            try
+            {
+                client.Connect(serverEndPoint);
+                clientStream = client.GetStream();
+                clientStream.ReadTimeout = 60000; //Creating timeout of 1 minute
+                isConnectedToServer = true;
+            }
+            catch
+            {
+                MessageBox.Show("Couldn't connect to the server. Please try again later!");
+                Environment.Exit(1); //Exit code 1 because it didn't succeed
+            }
         }
 
-        public static void SignIn()
-        {
-            byte[] buffer = new ASCIIEncoding().GetBytes("sgin," + id + "," + password);
+        private static void sendToServer(string messageToServer)
+        { //This function sends a message to the server
+            byte[] buffer = new ASCIIEncoding().GetBytes(messageToServer);
             clientStream.Write(buffer, 0, buffer.Length);
             clientStream.Flush();
         }
 
-        public static void ConToUser()
+        private static string readSocket()
         {
-            byte[] buffer = new ASCIIEncoding().GetBytes("con,"+user2);
-            clientStream.Write(buffer, 0, buffer.Length);
-            clientStream.Flush();
+            // Buffer to store the response bytes.
+            Byte[] data = new Byte[256];
 
+            // String to store the response ASCII representation.
+            string responseData = "";
+
+            // Read the first batch of the TcpServer response bytes.
+            Int32 bytes = clientStream.Read(data, 0, data.Length);
+            responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+
+            return responseData;
         }
 
-        public static void ChangePass()
+        private static bool checkIfSuccess()
+        { //Function checks if last command was successfull or not and returns value
+            if (successCode.Equals(readSocket())) // Checking if we have a success
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool SignIn(string thePassword)
         {
-            byte[] buffer = new ASCIIEncoding().GetBytes("nps," + id + "," + password);
-            clientStream.Write(buffer, 0, buffer.Length);
-            clientStream.Flush();
+            bool res = true;
+
+            sendToServer("sgin," + id + "," + thePassword);
+
+            if (checkIfSuccess()) // Checking if we succeeded
+            {
+                password = thePassword;
+                res = true;
+                loggedIn = true;
+            }
+
+            return res;
+        }
+
+        public static bool ConToUser(string targetUser)
+        {
+            bool res = false;
+
+            sendToServer("con," + targetUser);
+
+            if(checkIfSuccess()) // Checking if we have a success
+            {
+                res = true;
+                isConnectedToUser = true;
+                
+            }
+            return res;
+        }
+
+        public static bool ChangePass(string currPassword, string newPassword)
+        {
+            bool res = false;
+
+            if (currPassword.Equals(password)) //Checking if the current password user provided is correct
+            {
+                sendToServer("nps," + id + "," + newPassword);
+
+                if (checkIfSuccess()) // Checking if we have a success
+                {
+                    res = true;
+                    password = newPassword;
+                }
+            }
+
+            return res;
         }
 
 
@@ -112,54 +195,117 @@ namespace Samung_Alpha
             int bytesRead = clientStream.Read(buffer, 0, 4096);
          */
 
+        public static string getId()
+        {
+            return id;
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            Thread connectionThread = new Thread(Form1.startCon);
+            Thread idCreationThread = new Thread(Form1.createID);
 
+            connectionThread.Start(); //Connecting to the server
+            idCreationThread.Start(); //Creating an id
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void connectBtn_Click(object sender, EventArgs e)
         {
             Form2 f = new Form2();
             f.ShowDialog();
-            if (user2 != null)
+
+            if (isConnectedToUser)
             {
-                label3.Text = "Connected to:" + user2.ToUpper();
-                button1.Enabled = false;
-                ConToUser();
+                sessionStatusBtn.Text = "Connected to: " + user2.ToUpper();
+                connectBtn.Enabled = false;
+                connectBtn.Visible = false;
+                //TODO: Add disconnect button that appears after the user is connected
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void signinBtn_Click(object sender, EventArgs e)
         {
             Form3 f = new Form3();
             f.ShowDialog();
-            label2.Text = "Logged in as:" + id;
-            if(password != null)
+
+            if (loggedIn)
             {
-                button2.Enabled = false;
-                button1.Enabled = true;
-                startCon();
-                SignIn();
+                loginStatusBtn.Text = "Logged in as: " + id;
+                sginBtn.Enabled = false;
+                sginBtn.Visible = false;
+                connectBtn.Enabled = true;
+                connectBtn.Visible = true;
+                changePasswordLabel.Enabled = true;
+                changePasswordLabel.Visible = true;
             }
         }
 
-        private static void EnableForm()
+        private void newPasswordLabel_Click(object sender, EventArgs e)
         {
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-            if (id != null)
+            if (loggedIn && !isConnectedToUser) //We won't allow a user to change the password if he is in a session
             {
                 Form4 f = new Form4();
-                f.Show();
+                f.ShowDialog();
             }
             else
             {
-                MessageBox.Show("to change the password, please login");
+                MessageBox.Show("To change the password, please disconnect from the session.");
             }
 
+        }
+
+        private void exitBtn_Click(object sender, EventArgs e)
+        {
+            System.Windows.Forms.Application.Exit();
+        }
+
+        private void mnmzBtn_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
+
+        private void barPctr_MouseDown(object sender, MouseEventArgs e)
+        { //This is for moving the bar
+            ReleaseCapture();
+            SendMessage(this.Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            loadingGifBox.Dock = DockStyle.Fill;
+
+            //Adding loading screen
+            loadingLabel.Font = new Font("Arial", ClientRectangle.Width / 80);
+            loadingLabel.TextAlign = ContentAlignment.MiddleCenter;
+            loadingLabel.Dock = DockStyle.Bottom;
+
+            topBar.BringToFront();
+            mnmzBtn.BringToFront();
+            exitBtn.BringToFront();
+            loadingLabel.BringToFront();
+            
+            new Thread(() =>
+            {
+                while (!isConnectedToServer || id == null)
+                {
+                    Thread.Sleep(10); // Waiting for the id and the connection
+                }
+                BeginInvoke((MethodInvoker)delegate () { //Removing the loading screen
+                    loadingLabel.Visible = false;
+                    loadingLabel.Enabled = false;
+                    loadingGifBox.Visible = false;
+                    loadingGifBox.Enabled = false;
+                });
+            }).Start();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            client.Close();
+            if (clientStream != null)
+            {
+                clientStream.Close();
+            }
         }
     }
 }
