@@ -122,8 +122,15 @@ namespace Samung_Alpha
             string responseData = "";
 
             // Read the first batch of the TcpServer response bytes.
-            Int32 bytes = clientStream.Read(data, 0, data.Length);
-            responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+            try
+            {
+                Int32 bytes = clientStream.Read(data, 0, data.Length);
+                responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+            }
+            catch
+            {
+                //In case we couldn't read from stream dont raise an exception thank you
+            }
 
             return responseData;
         }
@@ -283,7 +290,7 @@ namespace Samung_Alpha
             mnmzBtn.BringToFront();
             exitBtn.BringToFront();
             loadingLabel.BringToFront();
-            
+
             new Thread(() =>
             {
                 while (!isConnectedToServer || id == null)
