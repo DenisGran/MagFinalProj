@@ -1,4 +1,5 @@
-import socket, _thread, os, sys, db
+import socket, _thread, os, sys
+import db, testDB
 from user import user_session
 
 os.system("title Samung server")
@@ -11,6 +12,14 @@ max_connections = 50 #Maximum connections this computer can handle
 curr_connections = 0
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+the_db = db.my_DB()
+print("Database loaded.")
+testingDB = False
+success_code = "01"
+failure_code = "02"
+unknown_request = "denied"
+connected_users = {} #Key is IP value is user_session object
+
 try:
 	server.bind((bind_ip, bind_port))
 except: #Making sure the IP/PORT aren't used
@@ -18,25 +27,10 @@ except: #Making sure the IP/PORT aren't used
 	sys.exit(1) #Stopping the program
 
 server.listen(5)  # max of qued connections
-
-theDB = db.my_DB()
-print("Database loaded.")
-testingDB = False
-print("MAX CONNECTIONS:", max_connections, "\nListening on port", bind_port)
-success_code = "01"
-failure_code = "02"
+print("MAX CONNECTIONS:", max_connections, "\nListening on port", bind_port, "\n\n-Server started-\n\n")
 
 if(testingDB):
-	print("\n**Database testing begins")
-	if(theDB.check_user_details("12366TEsT")):
-		print("User exists")
-	else:
-		print("User does not exist")
-	theDB.add_user("123TEsT", "pa$$", "999", "1223", "private")
-	theDB.print_user_details("123TEsT")
-	theDB.add_user("1234TEsT", "pa$$2", "9992", "12236", "professional")
-	theDB.print_user_details("1234TEsT")
-	print("**Database testing ends\n")
+	testDB()
 
 def send_message(client_sock, message):
 	'''Sends a message to socket and encodes it'''
@@ -49,7 +43,7 @@ def recieve_message(client_sock):
 
 	return (client_sock.recv(1024)).decode("utf-8") #Maximum message size recieved
 
-def handle_sign_in(client_socket, request, client_address, client_port):
+def handle_sign_in(client_socket, client_address, client_port, request):
 	'''This function handles sgin request'''
 
 	res = None
@@ -62,52 +56,64 @@ def handle_sign_in(client_socket, request, client_address, client_port):
 	print("Handle sign in function\n")
 	if(len(request_parameters) == 3): #Making sure we have at 3 parameters
 		try:
-			if(theDB.check_user_details(request_parameters[uid])): #Checking if user exists
-				if(theDB.check_user_details(request_parameters[uid], str(request_parameters[password]))): #Checking if this uid is already registered
+			if(the_db.check_user_details(request_parameters[uid])): #Checking if user exists
+				if(the_db.check_user_details(request_parameters[uid], str(request_parameters[password]))): #Checking if this uid is already registered
 					res = user_session(request_parameters[uid], client_address, str(client_port), "private") #User is logged in
-					print("Created user object")
 					send_message(client_socket, success_code)
+					print("User", request_parameters[uid] , "logged in\n")
 					#TODO: Decide when to use professional type of user
 					#TODO: Hash SHA256 the passwords
 				else:	#If the details don't match we wait for new uid & password
-					print("User gave wrong details")
+					print("User gave wrong details\n")
 					send_message(client_socket, wrong_details_code) #Todo add cooldown for 5 seconds to prevent spam
 			else:
 				#If this is a new user
 				try:
-					print("Adding new user")
-					theDB.add_user(request_parameters[uid], str(request_parameters[password]), client_address, str(client_port), "private")
-					#^^^ TODO: CHOOSE WHEN ACCOUNT TYPE IS PROFESSIONAL
-					res = user_session(request_parameters[uid], client_address, str(client_port), "private") #User is logged in
-					send_message(client_socket, success_code)
+					print("Adding new user\n")
+					if(the_db.add_user(request_parameters[uid], str(request_parameters[password]), client_address, str(client_port), "private")):
+						#^^^ TODO: CHOOSE WHEN ACCOUNT TYPE IS PROFESSIONAL
+						res = user_session(request_parameters[uid], client_address, str(client_port), "private") #User is logged in
+						send_message(client_socket, success_code)
+					else:
+						send_message(client_socket, failure_code)
 				except Exception as e: #If a crazy exception occured, send error to the client
 					print("While trying to add new user exception occurred:\n" + str(e))
 					send_message(client_socket, failure_code)
+
+			if(res): #If the returned object is not none user is logged in
+						try:
+							connected_users[client_address] = res
+							print("Added new user to connected_users")
+							print("User", str(res.uid), str(res.current_ip), str(res.current_port), str(res.type), "logged in\n")
+						except Exception as e:
+							print("Exception:", str(e))
+
 		except Exception as e:
 			print("An exception occured:", str(e))
 	else:
-		print("User didn't send 3 parameters to signin function.")
+		print("User didn't send 3 parameters to signin function.\n")
 		send_message(client_socket, failure_code)
-	return res
+	return
 
 def handle_change_password(client_socket, client_address, client_port, recieved_msg):
 	'''This function handle nps request'''
 
 	res = False
 	recieved_parameters = recieved_msg.split(',')
+	print("Handle_Change_Password")
 	if(len(recieved_parameters) == 3): #Making sure we have at least 3 parameters
 		uid = recieved_parameters[1]
 		new_password = str(recieved_parameters[2])
 
 		try:
-			theDB.add_user(uid, str(new_password), client_address, str(client_port), "private")
-			send_message(client_socket, "01") #Returning 01 if OK
+			the_db.add_user(uid, str(new_password), client_address, str(client_port), "private")
+			send_message(client_socket, success_code) #Returning 01 if OK
 			res = True
 		except Exception as e:
-			print("Couldn't change password of user [" + uid + "] Reason:\n" + str(e))
-			send_message(client_address, "02") #Returning 02 if failed
+			print("Couldn't change password of user [" + uid + "] Reason:\n" + str(e) + "\n")
+			send_message(client_address, failure_code) #Returning 02 if failed
 	else:
-		print("handle_change_password function requires 3 parameters.")
+		print("handle_change_password function requires 3 parameters.\n")
 		send_message(client_address, failure_code)
 	return res
 
@@ -115,47 +121,58 @@ def handle_client_connection(client_socket, client_address, client_port):
 	'''Handles every client that connects'''
 
 	global curr_connections
+	global connected_users
 	logged_in = False
-	this_user = None #user_session()
-	unknown_request = "denied"
+	available_signedin_functions = {'nps' : handle_change_password}
+
+	available_non_signedin_functions = {'sgin' : handle_sign_in}
+
+	available_args = {'nps' : [client_socket, client_address, client_port],
+	 "sgin" : [client_socket, client_address, client_port]}
+
+	requested_function = ""
+	requested_function_index = 0
 
 	curr_connections += 1
 	print("Current connections:", curr_connections)
+
 	if(max_connections == curr_connections):
 		print("Max connections has been reached, not accepting new connections")
+
 	try:
 		while True: #Endless loop until client closes connection
 			recievedMsg = str(recieve_message(client_socket))
 			print('From', str(client_address) + ":" + str(client_port), 'Recieved:\n' + recievedMsg)
+			requested_function = recievedMsg.split(',')[requested_function_index] #The first result from the split is the requested function
+			print("requested_function =", requested_function)
+
 			if(logged_in): #Functions for logged in users only
-				if('nps' in recievedMsg):
-					try:
-						handle_change_password(client_socket, client_address, client_port, recievedMsg)
-					except Exception as e:
-						print("Exception occured:", str(e))
-				elif('clcn' in recievedMsg): #clcn = close connection
-					break
+				if(requested_function in available_signedin_functions):
+					available_signedin_functions[requested_function](*available_args[requested_function], recievedMsg)
 				else:
+					print("Something went wrong. Unknown request.\n")
 					send_message(client_socket, unknown_request)
-			else:
-				if("sgin" in recievedMsg):
-					this_user = handle_sign_in(client_socket, recievedMsg, client_address, client_port)
-					if(this_user): #If the returned object is not none user is logged in
-						print("User logged in")
-						print("This user =", str(this_user))
-						try:
-							print(str(this_user.uid), str(this_user.current_ip), str(this_user.current_port), str(this_user.type))
-							logged_in = True
-						except Exception as e:
-							print("Exception:", str(e))
+
+			else: #If user isn't logged in yet
+				if(requested_function in available_non_signedin_functions): #Making sure the request is valid
+					available_non_signedin_functions[requested_function](*available_args[requested_function], recievedMsg)
+					if(client_address in connected_users):
+						logged_in = True
 				else:
+					print("Recieved unknown request.\n")
 					send_message(client_socket, unknown_request)
 	except:
 		pass
 	client_socket.close()
+
+	if(client_address in connected_users): #If user is registered, delete it
+		the_db.reset_user_current_ip(connected_users[client_address].uid) #Resetting the current ip in db
+		del connected_users[client_address]
+
 	print("Client", str(client_address) + ":" + str(client_port), "has closed connection.")
 	curr_connections -= 1
 	print("Curr_connections =", curr_connections)
+
 	return
 
 def is_full():

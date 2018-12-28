@@ -21,26 +21,49 @@ class my_DB: #FDatabase = File Database
 			res = True
 		return res
 
-	def add_user(self, uid, password, curr_IP, target_port, type):
+	def add_user(self, uid, password, curr_IP, target_port, user_type):
 		'''Adds/Updates a user in the database'''
 
+		res = False
 		self.__mutex.acquire() #Locking the MUTEX
 		if(self.check_user_details(uid)):
 			print("User already exists, updating details")
 			try:
 				self.__cursor.execute('update users set password="' + password + '",curr_ip="' + curr_IP + '",target_port=' + target_port + ' where uid="' + uid + '";')
-				self.__connection.commit(); #Applying changes
+				self.__connection.commit() #Applying changes
 				print("User [" + uid + "] details updated")
+				res = True
 			except Exception as e:
 				print("Something went wrong... couldn't add user to DB. Details:\n", str(e))
 		else:
 			print("Adding new user...")
 			try:
-				self.__cursor.execute('insert into users values("' + uid + '","' + password + '","' + curr_IP + '",' + target_port + ',"' + type + '");')
-				self.__connection.commit();#Applying changes
+				self.__cursor.execute('insert into users values("' + uid + '","' + password + '","' + curr_IP + '",' + target_port + ',"' + user_type + '");')
+				self.__connection.commit() #Applying changes
+				res = True
 			except Exception as e:
 				print("Something went wrong... couldn't add user to DB. Details:\n", str(e))
 		self.__mutex.release() #Releasing the MUTEX
+		return res
+
+	def reset_user_current_ip(self, uid):
+		'''This function resets the current ip of a user'''
+
+		try:
+			print("Resetting user", uid, "current ip in DB\n")
+			self.__cursor.execute('update users set curr_ip=null where uid="' + uid + '";')
+			self.__connection.commit() #Applying changes
+		except Exception as e:
+			print("Something went wrong... couldn't reset user's ip in DB. Details:\n", str(e))
+		return
+
+	def reset_all_users_current_ip(self, connected_users):
+		'''This function resets all current ips of users in db'''
+
+		print("Beginning to erase all current users ips")
+		for user in connected_users:
+			self.reset_user_current_ip(user.uid)
+		return
 
 	def print_user_details(self, uid):
 		'''For testing purposes ONLY'''
