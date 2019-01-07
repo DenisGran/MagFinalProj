@@ -41,6 +41,8 @@ namespace Samung_Alpha
         public static bool isConnectedToServer = false;
         private const string successCode = "01";
         private const string failureCode = "02";
+        //private const Queue<string> recievedFromServer = new Queue<string>;
+        
 
         private static void createID()
         {
@@ -113,8 +115,8 @@ namespace Samung_Alpha
             clientStream.Flush();
         }
 
-        private static string readSocket()
-        {
+        public static string readSocket()
+        { //TODO CHANGE THIS BACK TO PRIVATE
             // Buffer to store the response bytes.
             Byte[] data = new Byte[256];
 
@@ -228,11 +230,16 @@ namespace Samung_Alpha
                 connectBtn.Visible = false;
                 //TODO: Add disconnect button that appears after the user is connected
             }
+            else
+            {
+                MessageBox.Show("Could not connect to user");
+            }
         }
 
         private void signinBtn_Click(object sender, EventArgs e)
         {
             Form3 f = new Form3();
+
             f.ShowDialog();
 
             if (loggedIn)

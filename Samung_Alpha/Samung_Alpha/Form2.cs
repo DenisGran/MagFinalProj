@@ -20,9 +20,29 @@ namespace Samung_Alpha
             InitializeComponent();
         }
 
+        public static void connectionListener()
+        {
+            Form5 connectionForm = null;
+            string readFromSocket = "";
+            const string conRequest = "req";
+
+            while (Form1.loggedIn) //While the user is logged in
+            {
+                readFromSocket = Form1.readSocket();
+
+                if (readFromSocket.Contains(conRequest))
+                {
+                    connectionForm = new Form5(readFromSocket);
+                    connectionForm.ShowDialog();
+                    //TODO: do stuff after user decides to connect
+                }
+            }
+        }
+
         private void Form2_Load(object sender, EventArgs e)
         {
-
+            Thread listenToConnections = new Thread(Form2.connectionListener);
+            listenToConnections.Start(); //Starting to listen to incomming connections
         }
 
         private void button1_Click(object sender, EventArgs e)

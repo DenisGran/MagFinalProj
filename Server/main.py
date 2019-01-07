@@ -58,7 +58,7 @@ def handle_sign_in(client_socket, client_address, client_port, request):
 		try:
 			if(the_db.check_user_details(request_parameters[uid])): #Checking if user exists
 				if(the_db.check_user_details(request_parameters[uid], str(request_parameters[password]))): #Checking if this uid is already registered
-					res = user_session(request_parameters[uid], client_address, str(client_port), "private") #User is logged in
+					res = user_session(request_parameters[uid], client_address, str(client_port), "private", client_socket) #User is logged in
 					send_message(client_socket, success_code)
 					print("User", request_parameters[uid] , "logged in\n")
 					#TODO: Decide when to use professional type of user
@@ -72,7 +72,7 @@ def handle_sign_in(client_socket, client_address, client_port, request):
 					print("Adding new user\n")
 					if(the_db.add_user(request_parameters[uid], str(request_parameters[password]), client_address, str(client_port), "private")):
 						#^^^ TODO: CHOOSE WHEN ACCOUNT TYPE IS PROFESSIONAL
-						res = user_session(request_parameters[uid], client_address, str(client_port), "private") #User is logged in
+						res = user_session(request_parameters[uid], client_address, str(client_port), "private", client_socket) #User is logged in
 						send_message(client_socket, success_code)
 					else:
 						send_message(client_socket, failure_code)
@@ -93,6 +93,7 @@ def handle_sign_in(client_socket, client_address, client_port, request):
 	else:
 		print("User didn't send 3 parameters to signin function.\n")
 		send_message(client_socket, failure_code)
+
 	return
 
 def handle_change_password(client_socket, client_address, client_port, recieved_msg):
@@ -115,7 +116,39 @@ def handle_change_password(client_socket, client_address, client_port, recieved_
 	else:
 		print("handle_change_password function requires 3 parameters.\n")
 		send_message(client_address, failure_code)
+
 	return res
+
+def handle_peer_connect(client_socket, client_address, client_port, recieved_msg):
+	'''This function handles every client that wants to create a p2p connection'''
+
+	print("Starting handle_peer_connect")
+	user_to_connect_index = 1
+	parameters_amount = 2
+	recieved_parameters = recieved_msg.split(',')
+	if(len(recieved_parameters) < parameters_amount):
+		send_message(client_socket, failure_code)
+		print("handle_peer_connect function uses 2 parameters")
+	else:
+		print("Recieved parameters =", recieved_parameters)
+		user_to_connect = recieved_parameters[user_to_connect_index]
+		print("user_to_connect =", recieved_parameters[user_to_connect_index])
+		#^^The user to connect
+
+		try:
+			if(user_to_connect in connected_users):
+				user_to_connect_socket = connected_users[user_to_connect].socket
+				print("user_to_connect_socket =", user_to_connect_socket)
+				send_message(user_to_connect_socket, "req," + connected_users[client_address].uid)
+				recieve_message(user_to_connect_socket) #Waiting for response
+			else:
+				print("User is not connected")
+				send_message(client_socket, failure_code)
+
+		except Exception as e:
+			print("An exception occured: " + e)
+
+	return
 
 def handle_client_connection(client_socket, client_address, client_port):
 	'''Handles every client that connects'''
@@ -123,12 +156,13 @@ def handle_client_connection(client_socket, client_address, client_port):
 	global curr_connections
 	global connected_users
 	logged_in = False
-	available_signedin_functions = {'nps' : handle_change_password}
+	available_signedin_functions = {'nps' : handle_change_password, "con" : handle_peer_connect}
 
 	available_non_signedin_functions = {'sgin' : handle_sign_in}
 
 	available_args = {'nps' : [client_socket, client_address, client_port],
-	 "sgin" : [client_socket, client_address, client_port]}
+	 "sgin" : [client_socket, client_address, client_port],
+	 "con" : [client_socket, client_address, client_port]}
 
 	requested_function = ""
 	requested_function_index = 0
@@ -149,6 +183,7 @@ def handle_client_connection(client_socket, client_address, client_port):
 			if(logged_in): #Functions for logged in users only
 				if(requested_function in available_signedin_functions):
 					available_signedin_functions[requested_function](*available_args[requested_function], recievedMsg)
+
 				else:
 					print("Something went wrong. Unknown request.\n")
 					send_message(client_socket, unknown_request)
@@ -156,8 +191,9 @@ def handle_client_connection(client_socket, client_address, client_port):
 			else: #If user isn't logged in yet
 				if(requested_function in available_non_signedin_functions): #Making sure the request is valid
 					available_non_signedin_functions[requested_function](*available_args[requested_function], recievedMsg)
-					if(client_address in connected_users):
-						logged_in = True
+					if(client_address in connected_users): #Checking is signin function added the user to the conencted users list
+						logged_in = True #If the user was added, it has logged in.
+
 				else:
 					print("Recieved unknown request.\n")
 					send_message(client_socket, unknown_request)
@@ -166,7 +202,8 @@ def handle_client_connection(client_socket, client_address, client_port):
 	client_socket.close()
 
 	if(client_address in connected_users): #If user is registered, delete it
-		the_db.reset_user_current_ip(connected_users[client_address].uid) #Resetting the current ip in db
+		#the_db.reset_user_current_ip(connected_users[client_address].uid) #Resetting the current ip in db
+		#^^^No need for this while we are testing
 		del connected_users[client_address]
 
 	print("Client", str(client_address) + ":" + str(client_port), "has closed connection.")
@@ -183,6 +220,7 @@ def is_full():
 
 	if(curr_connections + 1 < max_connections): #Adding 1 so the count will be currect.
 		return False
+
 	return True
 
 def accept_connections():
@@ -192,11 +230,13 @@ def accept_connections():
 		client_sock, address = server.accept()
 		print('Accepted connection from', str(address)) #IP:PORT
 		client_handler = _thread.start_new_thread( handle_client_connection, (client_sock, address[0], address[1],))
+
 	return
 
 def main():
 	while True:
 		accept_connections()
+
 	return
 
 if __name__ == '__main__':
