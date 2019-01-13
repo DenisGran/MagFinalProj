@@ -97,11 +97,12 @@ namespace Samung_Alpha
 
         private static string ReadData()
         {
-                byte[] dremove = new byte[2048];
+            byte[] dremove = new byte[client.ReceiveBufferSize];
             netStream = client.GetStream();
-            netStream.Read(dremove, 0, dremove.Length);
-
-            return Encoding.UTF8.GetString(dremove);
+            netStream.Read(dremove, 0, (int)client.ReceiveBufferSize);
+            string x = Encoding.UTF8.GetString(dremove);
+            x = x.Replace("\0", string.Empty);
+            return x;
         }
 
         private static void startCon()
