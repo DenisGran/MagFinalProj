@@ -42,7 +42,10 @@ namespace Samung_Alpha
         private const string successCode = "01";
         private const string failureCode = "02";
         //private const Queue<string> recievedFromServer = new Queue<string>;
-        
+
+        private static NetworkStream netStream;
+
+
 
         private static void createID()
         {
@@ -92,6 +95,15 @@ namespace Samung_Alpha
             changePasswordLabel.Visible = false;
         }
 
+        private static string ReadData()
+        {
+                byte[] dremove = new byte[2048];
+            netStream = client.GetStream();
+            netStream.Read(dremove, 0, dremove.Length);
+
+            return Encoding.UTF8.GetString(dremove);
+        }
+
         private static void startCon()
         { //This function connects to the server (creates socket)
             try
@@ -139,10 +151,12 @@ namespace Samung_Alpha
 
         private static bool checkIfSuccess()
         { //Function checks if last command was successfull or not and returns value
-            if (successCode.Equals(readSocket())) // Checking if we have a success
+            string x = ReadData();
+            if (successCode.Equals(x)) // Checking if we have a success
             {
                 return true;
             }
+            MessageBox.Show(x);
             return false;
         }
 
@@ -172,7 +186,7 @@ namespace Samung_Alpha
             {
                 res = true;
                 isConnectedToUser = true;
-                
+                 
             }
             return res;
         }
