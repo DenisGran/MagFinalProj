@@ -27,24 +27,29 @@ namespace Samung_Alpha
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
         [DllImportAttribute("user32.dll")]
         public static extern bool ReleaseCapture();
-        // End of variables for moving the application
 
+        //Networking stuff
         public static TcpClient client = new TcpClient();
         public static IPEndPoint serverEndPoint = new
             IPEndPoint(IPAddress.Parse("127.0.0.1"), 1450);
-        public static NetworkStream clientStream;
+        private static NetworkStream clientStream;
+
+        //User information
         private static string password = null;
         private static string id = null;
         private static string user2 = null;
         public static bool loggedIn = false;
         public static bool isConnectedToUser = false;
         public static bool isConnectedToServer = false;
+        public static bool allowConnections = true;
+
+        //Protocol codes
         private const string successCode = "01";
         private const string failureCode = "02";
-        //private const Queue<string> recievedFromServer = new Queue<string>;
+        private const string incommingRequest = "req";
 
-        private static NetworkStream netStream;
-
+        //Recieved messages from server
+        private static Queue<string> recievedFromServer = new Queue<string>();
 
 
         private static void createID()
@@ -93,16 +98,28 @@ namespace Samung_Alpha
             connectBtn.Enabled = false;
             connectBtn.Visible = false;
             changePasswordLabel.Visible = false;
+            allowConnectionBtn.Visible = false;
         }
 
-        private static string ReadData()
+        private static void messagesToQueue()
         {
-            byte[] dremove = new byte[client.ReceiveBufferSize];
-            netStream = client.GetStream();
-            netStream.Read(dremove, 0, (int)client.ReceiveBufferSize);
-            string x = Encoding.UTF8.GetString(dremove);
-            x = x.Replace("\0", string.Empty);
-            return x;
+            Form incomingConnectionForm = null;
+            string responseFromServer = "";
+
+            while(isConnectedToServer)
+            {
+                responseFromServer = readSocket(); //Reading message
+
+                if (allowConnections && responseFromServer.Contains(incommingRequest))
+                { //We have to make sure this is not incoming request
+                    incomingConnectionForm = new Form5(responseFromServer);
+                    incomingConnectionForm.Show(); //Connecting to the server
+                }
+                else
+                {
+                    recievedFromServer.Enqueue(responseFromServer); //Into the queue
+                }
+            }
         }
 
         private static void startCon()
@@ -113,6 +130,7 @@ namespace Samung_Alpha
                 clientStream = client.GetStream();
                 clientStream.ReadTimeout = 60000; //Creating timeout of 1 minute
                 isConnectedToServer = true;
+                messagesToQueue(); //Turning on the reading function
             }
             catch
             {
@@ -121,15 +139,24 @@ namespace Samung_Alpha
             }
         }
 
+        private static string getLastFromQueue()
+        { //Using this function so we will wait for the queue to contain information
+            while(recievedFromServer.Count() == 0)
+            {
+            }
+            return recievedFromServer.Dequeue();
+        }
+
         private static void sendToServer(string messageToServer)
         { //This function sends a message to the server
             byte[] buffer = new ASCIIEncoding().GetBytes(messageToServer);
+
             clientStream.Write(buffer, 0, buffer.Length);
-            clientStream.Flush();
+            clientStream.Flush(); //Send message
         }
 
-        public static string readSocket()
-        { //TODO CHANGE THIS BACK TO PRIVATE
+        private static string readSocket()
+        {
             // Buffer to store the response bytes.
             Byte[] data = new Byte[256];
 
@@ -152,7 +179,8 @@ namespace Samung_Alpha
 
         private static bool checkIfSuccess()
         { //Function checks if last command was successfull or not and returns value
-            string x = ReadData();
+            string x = getLastFromQueue(); //Reading the latest message from server
+
             if (successCode.Equals(x)) // Checking if we have a success
             {
                 return true;
@@ -266,6 +294,7 @@ namespace Samung_Alpha
                 connectBtn.Visible = true;
                 changePasswordLabel.Enabled = true;
                 changePasswordLabel.Visible = true;
+                allowConnectionBtn.Visible = true;
             }
         }
 
@@ -334,6 +363,20 @@ namespace Samung_Alpha
             if (clientStream != null)
             {
                 clientStream.Close();
+            }
+        }
+
+        private void allowConnectionBtn_Click(object sender, EventArgs e)
+        {
+            if(allowConnections)
+            {
+                allowConnectionBtn.Text = "Denying connections";
+                allowConnections = false;
+            }
+            else
+            {
+                allowConnectionBtn.Text = "Allowing connections";
+                allowConnections = true;
             }
         }
     }

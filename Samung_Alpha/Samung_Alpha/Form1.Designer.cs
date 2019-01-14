@@ -41,6 +41,7 @@
             this.topBar = new System.Windows.Forms.PictureBox();
             this.loadingLabel = new System.Windows.Forms.Label();
             this.loadingGifBox = new System.Windows.Forms.PictureBox();
+            this.allowConnectionBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.topBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.loadingGifBox)).BeginInit();
@@ -170,12 +171,23 @@
             this.loadingGifBox.TabIndex = 11;
             this.loadingGifBox.TabStop = false;
             // 
+            // allowConnectionBtn
+            // 
+            this.allowConnectionBtn.Location = new System.Drawing.Point(472, 224);
+            this.allowConnectionBtn.Name = "allowConnectionBtn";
+            this.allowConnectionBtn.Size = new System.Drawing.Size(123, 42);
+            this.allowConnectionBtn.TabIndex = 12;
+            this.allowConnectionBtn.Text = "Allowing connections";
+            this.allowConnectionBtn.UseVisualStyleBackColor = true;
+            this.allowConnectionBtn.Click += new System.EventHandler(this.allowConnectionBtn_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(610, 405);
+            this.Controls.Add(this.allowConnectionBtn);
             this.Controls.Add(this.loadingLabel);
             this.Controls.Add(this.loadingGifBox);
             this.Controls.Add(this.exitBtn);
@@ -218,6 +230,7 @@
         private System.Windows.Forms.PictureBox topBar;
         private System.Windows.Forms.Label loadingLabel;
         private System.Windows.Forms.PictureBox loadingGifBox;
+        private System.Windows.Forms.Button allowConnectionBtn;
     }
 }
 
