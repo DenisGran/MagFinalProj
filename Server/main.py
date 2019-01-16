@@ -53,7 +53,7 @@ def handle_sign_in(client_socket, client_address, client_port, request):
 	request_parameters = request.split(',') #Splitting the request by ,
 	this_user_object = None
 
-	print("Handle sign in function\n")
+	print("{Handle sign in function\n")
 	if(len(request_parameters) == 3): #Making sure we have at 3 parameters
 		try:
 			if(the_db.check_user_details(request_parameters[uid])): #Checking if user exists
@@ -73,7 +73,9 @@ def handle_sign_in(client_socket, client_address, client_port, request):
 					print("Adding new user\n")
 					if(the_db.add_user(request_parameters[uid], str(request_parameters[password]), client_address, str(client_port), "private")):
 						#^^^ TODO: CHOOSE WHEN ACCOUNT TYPE IS PROFESSIONAL
+						print("Added user in db")
 						this_user_object = user_session(request_parameters[uid], client_address, str(client_port), "private", client_socket) #User is logged in
+						print("this_user_object =", this_user_object)
 						send_message(client_socket, success_code)
 
 					else:
@@ -100,6 +102,7 @@ def handle_sign_in(client_socket, client_address, client_port, request):
 	else:
 		print("User didn't send 5 parameters to signin function.\n")
 		send_message(client_socket, failure_code)
+	print("end of handle sign in function}")
 
 	return this_user_object
 
@@ -126,13 +129,16 @@ def handle_change_password(client_socket, client_address, client_port, recieved_
 
 	return res
 
-def handle_peer_connect(client_socket, client_address, client_port, recieved_msg):
+def handle_peer_connect(client_socket, client_address, client_port, this_user_object, recieved_msg):
 	'''This function handles every client that wants to create a p2p connection'''
 
-	print("\nStarting handle_peer_connect")
+	print("\n{Starting handle_peer_connect")
 	user_to_connect_index = 1
 	parameters_amount = 2
 	recieved_parameters = recieved_msg.split(',')
+
+	this_user_uid = this_user_object.uid
+	print("this_user_object uid =", this_user_uid)
 
 	if(len(recieved_parameters) < parameters_amount):
 		send_message(client_socket, failure_code)
@@ -148,9 +154,11 @@ def handle_peer_connect(client_socket, client_address, client_port, recieved_msg
 			if(user_to_connect in connected_users):
 				user_to_connect_socket = connected_users[user_to_connect].socket
 				print("user_to_connect_socket =", user_to_connect_socket)
-				send_message(user_to_connect_socket, "req," + connected_users[client_address].uid)
-				print("Sent req," + connected_users[client_address].uid)
-
+				try:
+					send_message(user_to_connect_socket, "req," + this_user_uid)
+					print("Sent req," + this_user_uid)
+				except Exception as e:
+					print("ERROR HAPPENED:", e)
 				recieve_message(user_to_connect_socket) #Waiting for response
 
 			else:
@@ -165,7 +173,7 @@ def handle_peer_connect(client_socket, client_address, client_port, recieved_msg
 
 		except Exception as e:
 			print("An exception occured: " + e)
-
+	print("end of handle_peer_connect function}")
 	return
 
 def handle_client_connection(client_socket, client_address, client_port):
@@ -178,10 +186,6 @@ def handle_client_connection(client_socket, client_address, client_port):
 	available_signedin_functions = {'nps' : handle_change_password, "con" : handle_peer_connect}
 
 	available_non_signedin_functions = {'sgin' : handle_sign_in}
-
-	available_args = {'nps' : [client_socket, client_address, client_port],
-	 "sgin" : [client_socket, client_address, client_port],
-	 "con" : [client_socket, client_address, client_port]}
 
 	requested_function = ""
 	requested_function_index = 0
@@ -199,6 +203,10 @@ def handle_client_connection(client_socket, client_address, client_port):
 			requested_function = recievedMsg.split(',')[requested_function_index] #The first result from the split is the requested function
 			print("requested_function =", requested_function)
 
+			available_args = {'nps' : [client_socket, client_address, client_port],
+			 "sgin" : [client_socket, client_address, client_port],
+			 "con" : [client_socket, client_address, client_port, this_user_object]}
+
 			if(logged_in): #Functions for logged in users only
 				if(requested_function in available_signedin_functions): #Making sure the request is valid
 					available_signedin_functions[requested_function](*available_args[requested_function], recievedMsg)
@@ -212,7 +220,7 @@ def handle_client_connection(client_socket, client_address, client_port):
 					this_user_object = available_non_signedin_functions[requested_function](*available_args[requested_function], recievedMsg)
 					if(this_user_object):
 						logged_in = True
-					print("this_user_object =", this_user_object)
+					print("this_user_object = [" + this_user_object.uid + "]")
 					print("this_user_object is logged_in=", this_user_object.logged_in)
 
 				else:

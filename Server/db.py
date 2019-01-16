@@ -17,8 +17,10 @@ class my_DB: #FDatabase = File Database
 		else: #If password isn't given we just search for the uid
 			print("Searching user", uid)
 			result = self.__cursor.execute('select 1 from users where uid="' + uid + '";')
+
 		if(result.fetchone()): #If the result isn't nontype the user exists
 			res = True
+		print("check_user_details finished res=", res)
 		return res
 
 	def add_user(self, uid, password, curr_IP, target_port, user_type):
@@ -82,7 +84,7 @@ class my_DB: #FDatabase = File Database
 			print("Table exists.")
 		except sqlite3.Error: #If the table does not exist we create it
 			print("Table does not exist. Creating it...")
-			__tableStructure = "CREATE TABLE USERS(UID STRING PRIMARY KEY NOT NULL, PASSWORD STRING NOT NULL, CURR_IP STRING UNIQUE NOT NULL, TARGET_PORT INT NOT NULL, TYPE STRING NOT NULL);"
+			__tableStructure = "CREATE TABLE USERS(UID STRING PRIMARY KEY NOT NULL, PASSWORD STRING NOT NULL, CURR_IP STRING NOT NULL, TARGET_PORT INT NOT NULL, TYPE STRING NOT NULL);"
 		return
 
 	def __init__(self):

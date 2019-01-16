@@ -14,11 +14,12 @@ namespace Samung_Alpha
     {
         public static string requestingUid = "";
 
+        string requestingUID = "unknown";
+
         public Form5(string recievedMsg)
         {
             int requestingUserUidIndex = 1;
             requestingUid = recievedMsg.Split(',')[requestingUserUidIndex]; //Splitting the message with ,
-            fromUserLabel.Text = requestingUid;
             InitializeComponent();
         }
 
@@ -32,6 +33,11 @@ namespace Samung_Alpha
         private void rejBtn_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void Form5_Load(object sender, EventArgs e)
+        {
+            fromUserLabel.Text = requestingUid;
         }
     }
 }

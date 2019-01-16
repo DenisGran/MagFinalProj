@@ -113,7 +113,7 @@ namespace Samung_Alpha
                 if (allowConnections && responseFromServer.Contains(incommingRequest))
                 { //We have to make sure this is not incoming request
                     incomingConnectionForm = new Form5(responseFromServer);
-                    incomingConnectionForm.Show(); //Connecting to the server
+                    incomingConnectionForm.ShowDialog(); //Connecting to the server
                 }
                 else
                 {
