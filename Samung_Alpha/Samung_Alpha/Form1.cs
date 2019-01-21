@@ -103,7 +103,7 @@ namespace Samung_Alpha
 
         private static void messagesToQueue()
         {
-            Form incomingConnectionForm = null;
+            Form5 incomingConnectionForm = null;
             string responseFromServer = "";
 
             while(isConnectedToServer)
@@ -114,9 +114,19 @@ namespace Samung_Alpha
                 { //We have to make sure this is not incoming request
                     incomingConnectionForm = new Form5(responseFromServer);
                     incomingConnectionForm.ShowDialog(); //Connecting to the server
+
+                    if(isConnectedToUser)
+                    { //If our user pressed accept we notify server that we want a connection
+                        sendToServer(successCode);
+                        //TODO
+                    }
+                    else
+                    {
+                        sendToServer(failureCode); //If user pressed decline
+                    }
                 }
                 else
-                {
+                { //If this is not a connection request
                     recievedFromServer.Enqueue(responseFromServer); //Into the queue
                 }
             }
@@ -185,7 +195,7 @@ namespace Samung_Alpha
             {
                 return true;
             }
-            MessageBox.Show(x);
+           // MessageBox.Show(x); //This is for debug
             return false;
         }
 
@@ -215,7 +225,6 @@ namespace Samung_Alpha
             {
                 res = true;
                 isConnectedToUser = true;
-                 
             }
             return res;
         }
@@ -272,10 +281,6 @@ namespace Samung_Alpha
                 connectBtn.Enabled = false;
                 connectBtn.Visible = false;
                 //TODO: Add disconnect button that appears after the user is connected
-            }
-            else
-            {
-                MessageBox.Show("Could not connect to user");
             }
         }
 

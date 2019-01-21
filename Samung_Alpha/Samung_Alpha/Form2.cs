@@ -20,46 +20,35 @@ namespace Samung_Alpha
             InitializeComponent();
         }
 
-        public static void connectionListener()
-        {
-            Form5 connectionForm = null;
-            string readFromSocket = "";
-            const string conRequest = "req";
-
-            while (Form1.loggedIn) //While the user is logged in
-            {
-                /*readFromSocket = Form1.readSocket();
-
-                if (readFromSocket.Contains(conRequest))
-                {
-                    connectionForm = new Form5(readFromSocket);
-                    connectionForm.ShowDialog();
-                    //TODO: do stuff after user decides to connect
-                }*/
-            }
-        }
-
         private void Form2_Load(object sender, EventArgs e)
         {
             
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
+        private void handleConnection()
+        { //This function is useful so we can run it in a different thread
             if (string.IsNullOrWhiteSpace(textBox1.Text))
             {
                 MessageBox.Show("No user entered");
             }
             else
             {
-                if (textBox1.Text.Length == 12)
+                if (textBox1.Text.Length == 12 && !textBox1.Text.Equals(idExample))
                 {
+                    button1.Enabled = false;
+                    waitingForAnswerGif.Visible = true;
+                    waitingLabel.Visible = true;
+
                     if (Form1.ConToUser(textBox1.Text.ToString()))
                     {
                         this.Close();
+                        //TODO
                     }
                     else
                     {
+                        button1.Enabled = true;
+                        waitingForAnswerGif.Visible = false;
+                        waitingLabel.Visible = true;
                         MessageBox.Show("Client refused connection");
                     }
                 }
@@ -68,6 +57,13 @@ namespace Samung_Alpha
                     MessageBox.Show("ERROR #001: user ID must be 12 characters long");
                 }
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Thread connectionRequest = new Thread(handleConnection); //Doing this in a new thread so the program wont crash.
+            connectionRequest.Start(); //Why dont we run other functions threaded? -because other functions interact with server and the server-
+                                       //answers in miliseconds, while this request is for the user who can answer in minutes, and it will make the program crash.
         }
 
         private void textBox1_Click(object sender, EventArgs e)

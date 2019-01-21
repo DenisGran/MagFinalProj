@@ -123,6 +123,7 @@
     <Content Include="Content\bestimage.jpg" />
     <Content Include="Content\images.jpg" />
     <Content Include="Content\logo.gif" />
+    <Content Include="resources\smallloadinggif.gif" />
     <None Include="resources\loadingGif.gif" />
   </ItemGroup>
   <ItemGroup />

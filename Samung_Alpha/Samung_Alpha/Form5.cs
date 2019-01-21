@@ -12,9 +12,7 @@ namespace Samung_Alpha
 {
     public partial class Form5 : Form
     {
-        public static string requestingUid = "";
-
-        string requestingUID = "unknown";
+        public static string requestingUid = "Unknown";
 
         public Form5(string recievedMsg)
         {

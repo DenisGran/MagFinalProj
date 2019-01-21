@@ -57,7 +57,7 @@
             // fromUserLabel
             // 
             this.fromUserLabel.AutoSize = true;
-            this.fromUserLabel.Location = new System.Drawing.Point(86, 35);
+            this.fromUserLabel.Location = new System.Drawing.Point(93, 37);
             this.fromUserLabel.Name = "fromUserLabel";
             this.fromUserLabel.Size = new System.Drawing.Size(93, 13);
             this.fromUserLabel.TabIndex = 2;
@@ -66,7 +66,7 @@
             // infoLabel
             // 
             this.infoLabel.AutoSize = true;
-            this.infoLabel.Location = new System.Drawing.Point(70, 69);
+            this.infoLabel.Location = new System.Drawing.Point(78, 76);
             this.infoLabel.Name = "infoLabel";
             this.infoLabel.Size = new System.Drawing.Size(124, 13);
             this.infoLabel.TabIndex = 3;
@@ -82,6 +82,7 @@
             this.Controls.Add(this.fromUserLabel);
             this.Controls.Add(this.rejBtn);
             this.Controls.Add(this.okBtn);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Form5";

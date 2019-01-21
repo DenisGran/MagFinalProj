@@ -33,6 +33,9 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.waitingLabel = new System.Windows.Forms.Label();
+            this.waitingForAnswerGif = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.waitingForAnswerGif)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -81,6 +84,30 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // waitingLabel
+            // 
+            this.waitingLabel.AutoSize = true;
+            this.waitingLabel.BackColor = System.Drawing.Color.Transparent;
+            this.waitingLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.waitingLabel.Location = new System.Drawing.Point(151, 142);
+            this.waitingLabel.Name = "waitingLabel";
+            this.waitingLabel.Size = new System.Drawing.Size(163, 16);
+            this.waitingLabel.TabIndex = 7;
+            this.waitingLabel.Text = "Waiting for response...";
+            this.waitingLabel.Visible = false;
+            // 
+            // waitingForAnswerGif
+            // 
+            this.waitingForAnswerGif.BackColor = System.Drawing.Color.Transparent;
+            this.waitingForAnswerGif.Image = global::Samung_Alpha.Properties.Resources.smallloadinggif;
+            this.waitingForAnswerGif.Location = new System.Drawing.Point(187, 80);
+            this.waitingForAnswerGif.Name = "waitingForAnswerGif";
+            this.waitingForAnswerGif.Size = new System.Drawing.Size(75, 38);
+            this.waitingForAnswerGif.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.waitingForAnswerGif.TabIndex = 8;
+            this.waitingForAnswerGif.TabStop = false;
+            this.waitingForAnswerGif.Visible = false;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -88,6 +115,9 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(431, 166);
+            this.ControlBox = false;
+            this.Controls.Add(this.waitingLabel);
+            this.Controls.Add(this.waitingForAnswerGif);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBox1);
@@ -97,6 +127,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Connect to user";
             this.Load += new System.EventHandler(this.Form2_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.waitingForAnswerGif)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -108,5 +139,7 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label waitingLabel;
+        private System.Windows.Forms.PictureBox waitingForAnswerGif;
     }
 }

@@ -136,6 +136,7 @@ def handle_peer_connect(client_socket, client_address, client_port, this_user_ob
 	user_to_connect_index = 1
 	parameters_amount = 2
 	recieved_parameters = recieved_msg.split(',')
+	ans = ""
 
 	this_user_uid = this_user_object.uid
 	print("this_user_object uid =", this_user_uid)
@@ -153,22 +154,22 @@ def handle_peer_connect(client_socket, client_address, client_port, this_user_ob
 		try:
 			if(user_to_connect in connected_users):
 				user_to_connect_socket = connected_users[user_to_connect].socket
-				print("user_to_connect_socket =", user_to_connect_socket)
 				try:
 					send_message(user_to_connect_socket, "req," + this_user_uid)
 					print("Sent req," + this_user_uid)
 				except Exception as e:
 					print("ERROR HAPPENED:", e)
-				recieve_message(user_to_connect_socket) #Waiting for response
+				print("Waiting for response from", user_to_connect)
+
+				while(ans != success_code or ans != failure_code): #Waiting for the right response
+					ans = recieve_message(user_to_connect_socket) #Waiting for response
+
+				print("From", user_to_connect.uid, "recieved:", ans)
+				print("Sending answer to requesting user...")
+				send_message(client_socket, ans)
 
 			else:
 				print("User is not connected")
-				print("connected_users =", connected_users)
-				print("user_to_connect type =", type(user_to_connect))
-				try:
-					print("connected_users[user_to_connect]=", connected_users[user_to_connect])
-				except:
-					print("connected_users[user_to_connect] not found")
 				send_message(client_socket, failure_code)
 
 		except Exception as e:
@@ -220,20 +221,20 @@ def handle_client_connection(client_socket, client_address, client_port):
 					this_user_object = available_non_signedin_functions[requested_function](*available_args[requested_function], recievedMsg)
 					if(this_user_object):
 						logged_in = True
-					print("this_user_object = [" + this_user_object.uid + "]")
-					print("this_user_object is logged_in=", this_user_object.logged_in)
-
 				else:
 					print("Recieved unknown request.\n")
 					send_message(client_socket, unknown_request)
-	except:
-		pass
+	except Exception as e:
+		print("Dumbass client closed connection, details:", e)
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
 	client_socket.close()
 
-	if(client_address in connected_users): #If user is registered, delete it
+	if(this_user_object.uid in connected_users): #If user is registered, delete it
 		#the_db.reset_user_current_ip(connected_users[client_address].uid) #Resetting the current ip in db
 		#^^^No need for this while we are testing
-		del connected_users[client_address]
+		del connected_users[this_user_object.uid]
 
 	print("Client", str(client_address) + ":" + str(client_port), "has closed connection.")
 	curr_connections -= 1
