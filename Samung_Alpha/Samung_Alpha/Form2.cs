@@ -35,9 +35,6 @@ namespace Samung_Alpha
             {
                 if (textBox1.Text.Length == 12 && !textBox1.Text.Equals(idExample))
                 {
-                    button1.Enabled = false;
-                    waitingForAnswerGif.Visible = true;
-                    waitingLabel.Visible = true;
 
                     if (Form1.ConToUser(textBox1.Text.ToString()))
                     {
@@ -46,9 +43,6 @@ namespace Samung_Alpha
                     }
                     else
                     {
-                        button1.Enabled = true;
-                        waitingForAnswerGif.Visible = false;
-                        waitingLabel.Visible = true;
                         MessageBox.Show("Client refused connection");
                     }
                 }
@@ -57,6 +51,11 @@ namespace Samung_Alpha
                     MessageBox.Show("ERROR #001: user ID must be 12 characters long");
                 }
             }
+            BeginInvoke((MethodInvoker)delegate () { //Resetting everything
+                waitingForAnswerGif.Visible = false;
+                waitingLabel.Visible = false;
+                button1.Enabled = true;
+            });
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -64,6 +63,9 @@ namespace Samung_Alpha
             Thread connectionRequest = new Thread(handleConnection); //Doing this in a new thread so the program wont crash.
             connectionRequest.Start(); //Why dont we run other functions threaded? -because other functions interact with server and the server-
                                        //answers in miliseconds, while this request is for the user who can answer in minutes, and it will make the program crash.
+            button1.Enabled = false;
+            waitingForAnswerGif.Visible = true;
+            waitingLabel.Visible = true;
         }
 
         private void textBox1_Click(object sender, EventArgs e)

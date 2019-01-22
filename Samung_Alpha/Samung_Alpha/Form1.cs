@@ -105,14 +105,17 @@ namespace Samung_Alpha
         {
             Form5 incomingConnectionForm = null;
             string responseFromServer = "";
+            int requestingUserUidIndex = 1;
+            string requestingUid = "";
 
-            while(isConnectedToServer)
+            while (isConnectedToServer)
             {
                 responseFromServer = readSocket(); //Reading message
 
                 if (allowConnections && responseFromServer.Contains(incommingRequest))
                 { //We have to make sure this is not incoming request
-                    incomingConnectionForm = new Form5(responseFromServer);
+                    requestingUid = responseFromServer.Split(',')[requestingUserUidIndex]; //Splitting the message with ,
+                    incomingConnectionForm = new Form5(requestingUid);
                     incomingConnectionForm.ShowDialog(); //Connecting to the server
 
                     if(isConnectedToUser)
@@ -122,7 +125,7 @@ namespace Samung_Alpha
                     }
                     else
                     {
-                        sendToServer(failureCode); //If user pressed decline
+                        sendToServer("rej" + failureCode); //If user pressed decline
                     }
                 }
                 else
