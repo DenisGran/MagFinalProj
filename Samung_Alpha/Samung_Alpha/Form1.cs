@@ -157,7 +157,7 @@ namespace Samung_Alpha
             return recievedFromServer.Dequeue();
         }
 
-        private static void sendToServer(string messageToServer)
+        public static void sendToServer(string messageToServer)
         { //This function sends a message to the server
             byte[] buffer = new ASCIIEncoding().GetBytes(messageToServer);
 
@@ -190,12 +190,13 @@ namespace Samung_Alpha
         private static bool checkIfSuccess()
         { //Function checks if last command was successfull or not and returns value
             string x = getLastFromQueue(); //Reading the latest message from server
-
+            Form5.un1 = x;
             if (successCode.Equals(x)) // Checking if we have a success
             {
+                MessageBox.Show(x); //This is for debug
+
                 return true;
             }
-           // MessageBox.Show(x); //This is for debug
             return false;
         }
 
