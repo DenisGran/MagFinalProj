@@ -20,6 +20,11 @@ namespace Samung_Alpha
 {
     public partial class Form1 : Form
     {
+        //threads
+        Thread connectionThread = new Thread(Form1.startCon);
+        Thread idCreationThread = new Thread(Form1.createID);
+
+
         // These are for moving the application from the bar
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
@@ -147,7 +152,10 @@ namespace Samung_Alpha
             }
             catch
             {
-                MessageBox.Show("Couldn't connect to the server. Please try again later!");
+                if (!isConnectedToServer)
+                {
+                    MessageBox.Show("Couldn't connect to the server. Please try again later!");
+                }
                 Environment.Exit(1); //Exit code 1 because it didn't succeed
             }
         }
@@ -267,8 +275,6 @@ namespace Samung_Alpha
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Thread connectionThread = new Thread(Form1.startCon);
-            Thread idCreationThread = new Thread(Form1.createID);
 
             connectionThread.Start(); //Connecting to the server
             idCreationThread.Start(); //Creating an id
@@ -373,6 +379,7 @@ namespace Samung_Alpha
             {
                 clientStream.Close();
             }
+            connectionThread.Abort();
         }
 
         private void allowConnectionBtn_Click(object sender, EventArgs e)

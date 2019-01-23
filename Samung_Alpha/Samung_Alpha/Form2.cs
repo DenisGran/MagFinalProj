@@ -51,6 +51,7 @@ namespace Samung_Alpha
                     MessageBox.Show("ERROR #001: user ID must be 12 characters long");
                 }
             }
+
             BeginInvoke((MethodInvoker)delegate () { //Resetting everything
                 waitingForAnswerGif.Visible = false;
                 waitingLabel.Visible = false;
