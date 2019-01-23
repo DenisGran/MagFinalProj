@@ -15,10 +15,10 @@ namespace Samung_Alpha
         public static string requestingUid = "Unknown";
         public static string un1;
 
-        public Form5(string recievedMsg)
+        public Form5(string requestingUID)
         {
-            int requestingUserUidIndex = 1;
-            requestingUid = recievedMsg.Split(',')[requestingUserUidIndex]; //Splitting the message with ,
+            
+            
             InitializeComponent();
         }
 

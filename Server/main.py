@@ -129,10 +129,10 @@ def handle_change_password(client_socket, client_address, client_port, recieved_
 
 	return res
 
-def handle_peer_connect(client_socket, client_address, client_port, this_user_object, recieved_msg):
-	'''This function handles every client that wants to create a p2p connection'''
+def handle_con(client_socket, client_address, client_port, this_user_object, recieved_msg):
+	'''This function handles every p2p connection request'''
 
-	print("\n{Starting handle_peer_connect")
+	print("\n{Starting handle_con")
 	user_to_connect_index = 1
 	parameters_amount = 2
 	recieved_parameters = recieved_msg.split(',')
@@ -143,7 +143,7 @@ def handle_peer_connect(client_socket, client_address, client_port, this_user_ob
 
 	if(len(recieved_parameters) < parameters_amount):
 		send_message(client_socket, failure_code)
-		print("handle_peer_connect function uses 2 parameters")
+		print("handle_con function uses 2 parameters")
 
 	else:
 		print("Recieved parameters =", recieved_parameters)
@@ -159,10 +159,7 @@ def handle_peer_connect(client_socket, client_address, client_port, this_user_ob
 					print("Sent req," + this_user_uid)
 				except Exception as e:
 					print("ERROR HAPPENED:", e)
-				print("Waiting for response from", user_to_connect)
-
-				while(ans != success_code or ans != failure_code): #Waiting for the right response
-					ans = recieve_message(user_to_connect_socket) #Waiting for response
+				print("Sent connection request to", user_to_connect)
 
 				print("From", user_to_connect.uid, "recieved:", ans)
 				print("Sending answer to requesting user...")
@@ -174,7 +171,25 @@ def handle_peer_connect(client_socket, client_address, client_port, this_user_ob
 
 		except Exception as e:
 			print("An exception occured: " + e)
-	print("end of handle_peer_connect function}")
+	print("end of handle_con function}")
+	return
+
+def handle_acc(client_socket, client_address, client_port, this_user_object, recieved_msg):
+	user_wants_to_connect_index = 1
+	user_wants_to_connect_uid = ans.split(',')[user_wants_to_connect_index]
+	user_wants_to_connect = None
+
+	print("{Starting handle_acc")
+	print("From", user_to_connect.uid, "recieved:", ans)
+
+	if(user_wants_to_connect_uid in connected_users):
+		user_wants_to_connect = connected_users[user_wants_to_connect]
+		send_message(user_wants_to_connect.socket, "acc," + user_wants_to_connect_uid + "," + client_address + ":" + client_port)
+		#^Sending user who wants to connect the information of the user he wants to connect
+		send_message(client_socket, "acc," + this_user_object.uid + "," + user_wants_to_connect.current_ip + ":" + user_wants_to_connect.current_port)
+		#^Sending the connected user the information of the user that wants to connect
+	print("end handle_acc}")
+
 	return
 
 def handle_client_connection(client_socket, client_address, client_port):
@@ -184,7 +199,7 @@ def handle_client_connection(client_socket, client_address, client_port):
 	global connected_users
 	logged_in = False
 	this_user_object = None
-	available_signedin_functions = {'nps' : handle_change_password, "con" : handle_peer_connect}
+	available_signedin_functions = {'nps' : handle_change_password, 'con' : handle_con, 'acc' : handle_acc}
 
 	available_non_signedin_functions = {'sgin' : handle_sign_in}
 
@@ -206,7 +221,8 @@ def handle_client_connection(client_socket, client_address, client_port):
 
 			available_args = {'nps' : [client_socket, client_address, client_port],
 			 "sgin" : [client_socket, client_address, client_port],
-			 "con" : [client_socket, client_address, client_port, this_user_object]}
+			 "con" : [client_socket, client_address, client_port, this_user_object],
+			 "acc" : [client_socket, client_address, client_port, this_user_object]}
 
 			if(logged_in): #Functions for logged in users only
 				if(requested_function in available_signedin_functions): #Making sure the request is valid
@@ -224,8 +240,9 @@ def handle_client_connection(client_socket, client_address, client_port):
 				else:
 					print("Recieved unknown request.\n")
 					send_message(client_socket, unknown_request)
+
 	except Exception as e:
-		print("Dumbass client closed connection, details:", e)
+		print("Client closed connection, details:", e)
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 		print(exc_type, fname, exc_tb.tb_lineno)
