@@ -104,6 +104,9 @@ namespace Samung_Alpha
             connectBtn.Visible = false;
             changePasswordLabel.Visible = false;
             allowConnectionBtn.Visible = false;
+            Form7 f = new Form7();
+            this.Hide();
+            f.ShowDialog();
         }
 
         private static void messagesToQueue()
