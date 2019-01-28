@@ -114,7 +114,6 @@
             this.Controls.Add(this.thisUserLabel);
             this.Name = "Form6";
             this.Text = "Connecting...";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form6_FormClosing);
             this.Load += new System.EventHandler(this.Form6_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

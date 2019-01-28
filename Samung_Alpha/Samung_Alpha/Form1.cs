@@ -161,27 +161,11 @@ namespace Samung_Alpha
             uid = x;
         }
 
-<<<<<<< HEAD
         private void controlMenu(bool option = true)
         { //Enabling / disabling the menu according to the value of option
             connectBtn.Enabled = option;
             allowConnectionBtn.Enabled = option;
             changePasswordLabel.Enabled = option;
-=======
-        public Form1()
-        {
-            InitializeComponent();
-            connectBtn.Enabled = false;
-            connectBtn.Visible = false;
-            changePasswordLabel.Visible = false;
-            allowConnectionBtn.Visible = false;
-<<<<<<< HEAD
-            Form7 f = new Form7();
-            this.Hide();
-            f.ShowDialog();
->>>>>>> c617f42dfc7543957084e27ebc8ff4ab861268e0
-=======
->>>>>>> parent of c617f42... d
         }
 
         private void messagesToQueue()

@@ -1,0 +1,1 @@
+start /b cd C:\Users\magshimim\Documents\Magshimim\Yud_Bet\Project Files\Server && main.py
