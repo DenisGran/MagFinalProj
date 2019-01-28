@@ -175,10 +175,13 @@ namespace Samung_Alpha
             connectBtn.Visible = false;
             changePasswordLabel.Visible = false;
             allowConnectionBtn.Visible = false;
+<<<<<<< HEAD
             Form7 f = new Form7();
             this.Hide();
             f.ShowDialog();
 >>>>>>> c617f42dfc7543957084e27ebc8ff4ab861268e0
+=======
+>>>>>>> parent of c617f42... d
         }
 
         private void messagesToQueue()

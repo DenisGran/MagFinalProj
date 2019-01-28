@@ -80,6 +80,7 @@
       <DependentUpon>Form5.cs</DependentUpon>
     </Compile>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <Compile Include="Form6.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,6 +94,8 @@
       <DependentUpon>Form7.cs</DependentUpon>
 >>>>>>> c617f42dfc7543957084e27ebc8ff4ab861268e0
     </Compile>
+=======
+>>>>>>> parent of c617f42... d
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -111,6 +114,7 @@
       <DependentUpon>Form5.cs</DependentUpon>
     </EmbeddedResource>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <EmbeddedResource Include="Form6.resx">
       <DependentUpon>Form6.cs</DependentUpon>
 =======
@@ -118,6 +122,8 @@
       <DependentUpon>Form7.cs</DependentUpon>
 >>>>>>> c617f42dfc7543957084e27ebc8ff4ab861268e0
     </EmbeddedResource>
+=======
+>>>>>>> parent of c617f42... d
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
