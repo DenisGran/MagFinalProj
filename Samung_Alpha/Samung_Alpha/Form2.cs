@@ -27,6 +27,7 @@ namespace Samung_Alpha
 
         private void handleConnection()
         { //This function is useful so we can run it in a different thread
+
             if (string.IsNullOrWhiteSpace(textBox1.Text))
             {
                 MessageBox.Show("No user entered");
@@ -37,9 +38,13 @@ namespace Samung_Alpha
                 {
 
                     if (Form1.ConToUser(textBox1.Text.ToString()))
-                    {
-                        this.Close();
-                        //TODO
+                    { //If user accepted our request we just close this form
+                        Form1.user2 = textBox1.Text.ToString(); //Setting the user that we want to connect
+
+                        this.Invoke((MethodInvoker)delegate
+                        {
+                            this.Close();
+                        });
                     }
                     else
                     {
@@ -48,11 +53,12 @@ namespace Samung_Alpha
                 }
                 else
                 {
-                    MessageBox.Show("ERROR #001: user ID must be 12 characters long");
+                    MessageBox.Show("ERROR #001: user UID must be 12 characters long");
                 }
             }
 
-            BeginInvoke((MethodInvoker)delegate () { //Resetting everything
+            BeginInvoke((MethodInvoker)delegate ()
+            { //Resetting everything
                 waitingForAnswerGif.Visible = false;
                 waitingLabel.Visible = false;
                 button1.Enabled = true;

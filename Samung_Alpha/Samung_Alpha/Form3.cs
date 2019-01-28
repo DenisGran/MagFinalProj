@@ -15,7 +15,7 @@ namespace Samung_Alpha
         public Form3()
         {
             InitializeComponent();
-            textBox1.Text = Form1.getId();
+            textBox1.Text = Form1.getUid();
         }
 
         private void button1_Click(object sender, EventArgs e)

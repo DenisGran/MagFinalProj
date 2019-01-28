@@ -53,7 +53,7 @@ def handle_sign_in(client_socket, client_address, client_port, request):
 	request_parameters = request.split(',') #Splitting the request by ,
 	this_user_object = None
 
-	print("{Handle sign in function\n")
+	print("\n{Handle sign in function\n")
 	if(len(request_parameters) == 3): #Making sure we have at 3 parameters
 		try:
 			if(the_db.check_user_details(request_parameters[uid])): #Checking if user exists
@@ -111,7 +111,7 @@ def handle_change_password(client_socket, client_address, client_port, recieved_
 
 	res = False
 	recieved_parameters = recieved_msg.split(',')
-	print("Handle_Change_Password")
+	print("\nHandle_Change_Password")
 	if(len(recieved_parameters) == 3): #Making sure we have at least 3 parameters
 		uid = recieved_parameters[1]
 		new_password = str(recieved_parameters[2])
@@ -130,13 +130,12 @@ def handle_change_password(client_socket, client_address, client_port, recieved_
 	return res
 
 def handle_con(client_socket, client_address, client_port, this_user_object, recieved_msg):
-	'''This function handles every p2p connection request'''
+	'''This function handles every con message'''
 
 	print("\n{Starting handle_con")
 	user_to_connect_index = 1
 	parameters_amount = 2
 	recieved_parameters = recieved_msg.split(',')
-	ans = ""
 
 	this_user_uid = this_user_object.uid
 	print("this_user_object uid =", this_user_uid)
@@ -152,18 +151,17 @@ def handle_con(client_socket, client_address, client_port, this_user_object, rec
 		#^^The user to connect
 
 		try:
-			if(user_to_connect in connected_users):
+			if(user_to_connect in connected_users): #Making sure the user is connected
 				user_to_connect_socket = connected_users[user_to_connect].socket
+
 				try:
-					send_message(user_to_connect_socket, "req," + this_user_uid)
+					send_message(user_to_connect_socket, "req," + this_user_uid) #Sending the client the request
 					print("Sent req," + this_user_uid)
+
 				except Exception as e:
 					print("ERROR HAPPENED:", e)
-				print("Sent connection request to", user_to_connect)
 
-				print("From", user_to_connect.uid, "recieved:", ans)
-				print("Sending answer to requesting user...")
-				send_message(client_socket, ans)
+				print("Sent connection request to", user_to_connect)
 
 			else:
 				print("User is not connected")
@@ -175,19 +173,34 @@ def handle_con(client_socket, client_address, client_port, this_user_object, rec
 	return
 
 def handle_acc(client_socket, client_address, client_port, this_user_object, recieved_msg):
+	'''This function handles acc message'''
+
 	user_wants_to_connect_index = 1
-	user_wants_to_connect_uid = ans.split(',')[user_wants_to_connect_index]
+	user_wants_to_connect_uid = recieved_msg.split(',')[user_wants_to_connect_index]
 	user_wants_to_connect = None
 
-	print("{Starting handle_acc")
-	print("From", user_to_connect.uid, "recieved:", ans)
+	print("\n{Starting handle_acc")
+	print("From", this_user_object.uid, "recieved:", recieved_msg)
 
-	if(user_wants_to_connect_uid in connected_users):
-		user_wants_to_connect = connected_users[user_wants_to_connect]
-		send_message(user_wants_to_connect.socket, "acc," + user_wants_to_connect_uid + "," + client_address + ":" + client_port)
-		#^Sending user who wants to connect the information of the user he wants to connect
-		send_message(client_socket, "acc," + this_user_object.uid + "," + user_wants_to_connect.current_ip + ":" + user_wants_to_connect.current_port)
-		#^Sending the connected user the information of the user that wants to connect
+	if(user_wants_to_connect_uid in connected_users): #If the user isn't connected we dont do anything
+		print(user_wants_to_connect_uid, "was found connected")
+
+		user_wants_to_connect = connected_users[user_wants_to_connect_uid]
+		print("About to send to the user that wants to connect an acc message")
+
+		send_message(user_wants_to_connect.socket, "acc," + this_user_object.uid) #Sending acc message
+		print("Sent acc," + this_user_object.uid + " to", user_wants_to_connect_uid)
+
+		try:
+			print("About to send inf to", user_wants_to_connect_uid)
+			send_message(user_wants_to_connect.socket, "inf," + this_user_object.uid + "," + client_address + "," + str(int(client_port) + 1)) #Sending the port +1
+			#^Sending user who wants to connect the information of the user he wants to connect
+
+			print("About to send inf to", this_user_object.uid)
+			send_message(client_socket, "inf," + user_wants_to_connect_uid + "," + user_wants_to_connect.current_ip + "," + user_wants_to_connect.current_port)
+			#^Sending the connected user the information of the user that wants to connect
+		except Exception as e:
+			print("While sending inf this happened:", e)
 	print("end handle_acc}")
 
 	return
@@ -222,7 +235,7 @@ def handle_client_connection(client_socket, client_address, client_port):
 			available_args = {'nps' : [client_socket, client_address, client_port],
 			 "sgin" : [client_socket, client_address, client_port],
 			 "con" : [client_socket, client_address, client_port, this_user_object],
-			 "acc" : [client_socket, client_address, client_port, this_user_object]}
+			 "acc" : [client_socket, client_address, str(client_port), this_user_object]}
 
 			if(logged_in): #Functions for logged in users only
 				if(requested_function in available_signedin_functions): #Making sure the request is valid
@@ -242,15 +255,15 @@ def handle_client_connection(client_socket, client_address, client_port):
 					send_message(client_socket, unknown_request)
 
 	except Exception as e:
-		print("Client closed connection, details:", e)
-		exc_type, exc_obj, exc_tb = sys.exc_info()
-		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-		print(exc_type, fname, exc_tb.tb_lineno)
+		#For debug:
+		#print("Client closed connection, details:", e)
+		#exc_type, exc_obj, exc_tb = sys.exc_info()
+		#fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		#print(exc_type, fname, exc_tb.tb_lineno)
+		pass
 	client_socket.close()
 
-	if(this_user_object.uid in connected_users): #If user is registered, delete it
-		#the_db.reset_user_current_ip(connected_users[client_address].uid) #Resetting the current ip in db
-		#^^^No need for this while we are testing
+	if(this_user_object and this_user_object.uid in connected_users): #If user is registered, delete it
 		del connected_users[this_user_object.uid]
 
 	print("Client", str(client_address) + ":" + str(client_port), "has closed connection.")
