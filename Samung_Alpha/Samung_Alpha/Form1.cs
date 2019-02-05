@@ -37,7 +37,7 @@ namespace Samung_Alpha
         //Networking stuff
         public static TcpClient client = new TcpClient();
         public static IPEndPoint serverEndPoint = new
-            IPEndPoint(IPAddress.Parse("192.168.43.229"), 1450);
+            IPEndPoint(IPAddress.Parse("127.0.0.1"), 1450);
         private static NetworkStream clientStream;
 
         //User information
@@ -71,6 +71,8 @@ namespace Samung_Alpha
             connectBtn.Visible = false;
             changePasswordLabel.Visible = false;
             allowConnectionBtn.Visible = false;
+            Form7 xr = new Form7();
+            xr.KeyboardPress();
         }
 
         private void Form1_Shown(object sender, EventArgs e)

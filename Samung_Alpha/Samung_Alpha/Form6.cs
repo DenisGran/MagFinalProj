@@ -158,7 +158,7 @@ namespace Samung_Alpha
             }
 
             //If everything is ok we start sending messages
-            sendMessage("This is a test message 1234", clientStream); //Sending a test
+            sendMessage("99", clientStream); //Sending a test
         }
 
         private void Form6_Load(object sender, EventArgs e)
