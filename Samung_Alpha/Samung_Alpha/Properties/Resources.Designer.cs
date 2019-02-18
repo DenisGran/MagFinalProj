@@ -83,6 +83,16 @@ namespace Samung_Alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap loganpauldabgreenscreen {
+            get {
+                object obj = ResourceManager.GetObject("loganpauldabgreenscreen", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap smallloadinggif {
             get {
                 object obj = ResourceManager.GetObject("smallloadinggif", resourceCulture);

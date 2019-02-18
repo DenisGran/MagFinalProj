@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.connectBtn = new System.Windows.Forms.Button();
             this.sginBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -38,24 +37,15 @@
             this.changePasswordLabel = new System.Windows.Forms.Label();
             this.exitBtn = new System.Windows.Forms.Button();
             this.mnmzBtn = new System.Windows.Forms.Button();
-            this.topBar = new System.Windows.Forms.PictureBox();
             this.loadingLabel = new System.Windows.Forms.Label();
-            this.loadingGifBox = new System.Windows.Forms.PictureBox();
             this.allowConnectionBtn = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.topBar)).BeginInit();
+            this.loadingGifBox = new System.Windows.Forms.PictureBox();
+            this.topBar = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.loadingGifBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.topBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(12, 36);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(583, 162);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
             // 
             // connectBtn
             // 
@@ -138,16 +128,6 @@
             this.mnmzBtn.UseVisualStyleBackColor = true;
             this.mnmzBtn.Click += new System.EventHandler(this.mnmzBtn_Click);
             // 
-            // topBar
-            // 
-            this.topBar.BackColor = System.Drawing.SystemColors.WindowFrame;
-            this.topBar.Location = new System.Drawing.Point(0, -6);
-            this.topBar.Name = "topBar";
-            this.topBar.Size = new System.Drawing.Size(610, 40);
-            this.topBar.TabIndex = 9;
-            this.topBar.TabStop = false;
-            this.topBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.barPctr_MouseDown);
-            // 
             // loadingLabel
             // 
             this.loadingLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -160,6 +140,16 @@
             this.loadingLabel.Text = "Loading...";
             this.loadingLabel.UseWaitCursor = true;
             // 
+            // allowConnectionBtn
+            // 
+            this.allowConnectionBtn.Location = new System.Drawing.Point(472, 224);
+            this.allowConnectionBtn.Name = "allowConnectionBtn";
+            this.allowConnectionBtn.Size = new System.Drawing.Size(123, 42);
+            this.allowConnectionBtn.TabIndex = 12;
+            this.allowConnectionBtn.Text = "Allowing connections";
+            this.allowConnectionBtn.UseVisualStyleBackColor = true;
+            this.allowConnectionBtn.Click += new System.EventHandler(this.allowConnectionBtn_Click);
+            // 
             // loadingGifBox
             // 
             this.loadingGifBox.Cursor = System.Windows.Forms.Cursors.AppStarting;
@@ -171,15 +161,25 @@
             this.loadingGifBox.TabIndex = 11;
             this.loadingGifBox.TabStop = false;
             // 
-            // allowConnectionBtn
+            // topBar
             // 
-            this.allowConnectionBtn.Location = new System.Drawing.Point(472, 224);
-            this.allowConnectionBtn.Name = "allowConnectionBtn";
-            this.allowConnectionBtn.Size = new System.Drawing.Size(123, 42);
-            this.allowConnectionBtn.TabIndex = 12;
-            this.allowConnectionBtn.Text = "Allowing connections";
-            this.allowConnectionBtn.UseVisualStyleBackColor = true;
-            this.allowConnectionBtn.Click += new System.EventHandler(this.allowConnectionBtn_Click);
+            this.topBar.BackColor = System.Drawing.SystemColors.WindowFrame;
+            this.topBar.Location = new System.Drawing.Point(0, -6);
+            this.topBar.Name = "topBar";
+            this.topBar.Size = new System.Drawing.Size(610, 40);
+            this.topBar.TabIndex = 9;
+            this.topBar.TabStop = false;
+            this.topBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.barPctr_MouseDown);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(12, 36);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(583, 162);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
             // 
             // Form1
             // 
@@ -208,9 +208,9 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.Form1_Shown);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.topBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.loadingGifBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.topBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

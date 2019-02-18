@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\encryptBitmap.cs" />
+    <Compile Include="Classes\screenCapture.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -141,6 +143,7 @@
     <Content Include="Content\bestimage.jpg" />
     <Content Include="Content\images.jpg" />
     <Content Include="Content\logo.gif" />
+    <None Include="resources\loganpauldabgreenscreen.gif" />
     <Content Include="resources\smallloadinggif.gif" />
     <None Include="resources\loadingGif.gif" />
   </ItemGroup>

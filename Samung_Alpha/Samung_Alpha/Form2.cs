@@ -34,7 +34,11 @@ namespace Samung_Alpha
             }
             else
             {
-                if (textBox1.Text.Length == 12 && !textBox1.Text.Equals(idExample))
+                if(textBox1.Text.CompareTo(Form1.getUid()) == 0)
+                {
+                    MessageBox.Show("Can't connect to yourself...");
+                }
+                else if (textBox1.Text.Length == 12 && !textBox1.Text.Equals(idExample))
                 {
 
                     if (Form1.ConToUser(textBox1.Text.ToString()))
