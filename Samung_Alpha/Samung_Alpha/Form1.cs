@@ -185,7 +185,7 @@ namespace Samung_Alpha
             { //While we are connected to the server we read messages and put them in the queue
                 responseFromServer = readSocket(); //Reading message
 
-                if (!isConnectedToUser)
+                if (!isConnectedToUser && responseFromServer != null)
                 { //If the user is not in a session
                     if (allowConnections && responseFromServer.Contains(incommingRequest))
                     { //if we allow connections and If this is a request to connect
@@ -256,7 +256,7 @@ namespace Samung_Alpha
                 }
                 else
                 { //If the user in a session we need to make sure that the messages come from the connected user
-                    if(responseFromServer.Contains(user2))
+                    if(responseFromServer != null && responseFromServer.Contains(user2))
                     {
                         recievedFromServer.Enqueue(responseFromServer); //Into the queue
                     }

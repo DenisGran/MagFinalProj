@@ -14,14 +14,13 @@ namespace Samung_Alpha.Classes
         {
             //Takes screenshot in the size given
 
-            Rectangle bounds = Screen.GetBounds(Point.Empty);
-            Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
+            Bitmap bitmap = new Bitmap(defaultScreenWidth, defaultScreenHeight);
 
             using (Graphics g = Graphics.FromImage(bitmap))
             {
-                g.CopyFromScreen(Point.Empty, Point.Empty, bounds.Size);
+                g.CopyFromScreen(Point.Empty, Point.Empty, bitmap.Size);
             }
-            bitmap.SetResolution(defaultScreenHeight, defaultScreenHeight);
+            bitmap.SetResolution(640, 480);
 
             return bitmap;
         }

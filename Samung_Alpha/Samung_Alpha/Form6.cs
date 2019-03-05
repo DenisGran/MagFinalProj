@@ -79,11 +79,11 @@ namespace Samung_Alpha
             }
             else
             {
+                this.Text = "Connecting to: " + userUID;
                 serverIPLbl.Text = userIP;
                 serverPortLbl.Text = userPort.ToString();
-                this.Text = "Connecting to: " + userUID;
-                serverEndPoint = new IPEndPoint(IPAddress.Parse(userIP), userPort);
                 actualStatusLabel.Text = this.Text;
+                serverEndPoint = new IPEndPoint(IPAddress.Parse(userIP), userPort);
 
                 new Thread(() =>
                 {
@@ -95,7 +95,7 @@ namespace Samung_Alpha
         private static string readSocket(NetworkStream thisStream)
         {
             // Buffer to store the response bytes.
-            Byte[] data = new Byte[256];
+            Byte[] data = new Byte[1000000]; //TODO CHANGE SIZE LATER
 
             // String to store the response ASCII representation.
             string responseData = "";
@@ -104,7 +104,7 @@ namespace Samung_Alpha
             try
             {
                 Int32 bytes = thisStream.Read(data, 0, data.Length);
-                responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+                responseData = System.Text.Encoding.Unicode.GetString(data, 0, bytes);
             }
             catch
             {
@@ -114,10 +114,35 @@ namespace Samung_Alpha
             return responseData;
         }
 
-        public static void sendMessage(string messageToServer, NetworkStream thisStream)
-        { //This function sends a message to the server
+        private static byte[] readBytes(NetworkStream thisStream)
+        {
+            // Buffer to store the response bytes.
+            Byte[] data = new Byte[1000000]; //TODO CHANGE SIZE LATER
 
-            byte[] buffer = new ASCIIEncoding().GetBytes(messageToServer);
+            // Read the first batch of the TcpServer response bytes.
+            try
+            {
+                Int32 bytes = thisStream.Read(data, 0, data.Length);
+            }
+            catch
+            {
+                //In case we couldn't read from stream dont raise an exception thank you
+            }
+
+            return data;
+        }
+
+        public static void sendMessage(string messageToServer, NetworkStream thisStream)
+        { //This function sends a message 
+
+            byte[] buffer = new UnicodeEncoding().GetBytes(messageToServer);
+
+            thisStream.Write(buffer, 0, buffer.Length);
+            thisStream.Flush(); //Send message
+        }
+
+        public static void sendBytes(byte[] buffer, NetworkStream thisStream)
+        { //This function sends bytes
 
             thisStream.Write(buffer, 0, buffer.Length);
             thisStream.Flush(); //Send message
@@ -127,16 +152,20 @@ namespace Samung_Alpha
         { //This function takes screenshot and sends it to the controlling user
 
             Bitmap temp = null;
-            string fullQuery = screenSharingCode + ",";
+            const string fullQuery = screenSharingCode + ",";
+            string tempQuery = ""; //Temporary query we create and send to user
             PictureBox screenBox = new PictureBox();
-
+            int primaryScreenWidthSize = Screen.PrimaryScreen.Bounds.Width;
+            int primaryScreenHeightSize = Screen.PrimaryScreen.Bounds.Height;
+            int twentyFourFramesASecond = 41;
 
             while (!client.Connected)
             { //We wait for the user to connect
             }
 
             screenBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            screenBox.Dock = DockStyle.Bottom;
+            screenBox.SendToBack();
+            screenBox.Dock = DockStyle.Fill;
 
             this.Invoke((MethodInvoker)delegate
             {
@@ -145,14 +174,16 @@ namespace Samung_Alpha
 
             while (client.Connected)
             { //Making sure we are still connected
-                temp = screenCapture.CaptureScreen();
+                //tempQuery = fullQuery; //Creating a copy
+
+                temp = screenCapture.CaptureScreen(primaryScreenWidthSize, primaryScreenHeightSize);
+                //tempQuery += temp.Width + "x" + temp.Height + "d"; //Skipping this for a test
+                //tempQuery = stringBitmap.bitmapToString(temp);
+                tempQuery = stringBitmap.bitmapToString(temp);
                 screenBox.Image = temp;
 
-                fullQuery += temp.Width + "x" + temp.Height + "d";
-                fullQuery += encryptBitmap.bitmapToBase64(temp);
-
-                sendMessage(fullQuery, clientStream); //Send base64 encrypted screenshot to connected user
-                Thread.Sleep(1); //So we wont spam it
+                sendMessage(tempQuery, clientStream); //Send screenshot to connected user
+                Thread.Sleep(twentyFourFramesASecond); //So we wont spam it
             }
         }
 
@@ -190,8 +221,6 @@ namespace Samung_Alpha
                 actualStatusLabel.Text = this.Text;
             });
 
-            //screenSharingThread.Start(); //Turning on the screen sharing function
-
             new Thread(() =>
             {
                 shareScreen();
@@ -212,11 +241,16 @@ namespace Samung_Alpha
 
             NetworkStream ns = client.GetStream();
             string query = "";
-            string base64EncodedScreenCode = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(screenSharingCode));
+
+            // Buffer to store the response bytes.
+            Byte[] byteQuery = new Byte[1000000]; //TODO CHANGE SIZE LATER
+
+            string tempQuery = "";
             PictureBox screenBox = new PictureBox();
 
-            screenBox.Dock = DockStyle.Bottom;
             screenBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            screenBox.SendToBack();
+            screenBox.Dock = DockStyle.Fill;
 
             this.Invoke((MethodInvoker)delegate
             {
@@ -226,15 +260,17 @@ namespace Samung_Alpha
             while (client.Connected)
             {
                 query = readSocket(ns);
+                //tempQuery = compressionClass.Unzip(byteQuery);
 
-                if(query.Contains(base64EncodedScreenCode))
+                screenBox.Image = stringBitmap.stringToBitmap(query);
+
+                /*if (query.Contains(screenSharingCode))
                 {
-                    screenBox.Image = encryptBitmap.base64ToBitmap(query); //Decoding base64 and setting this in the picturebox
-                }
+                    screenBox.Image = stringBitmap.stringToBitmap(query.Split('d')[1]); //Turning string into the picturebox
+                }*/
             }
 
             MessageBox.Show("User " + userUID + " disconnected.");
-            //sendMessage("99", clientStream); //Sending a test
         }
 
         private void connectToUser()
