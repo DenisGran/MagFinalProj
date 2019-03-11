@@ -37,7 +37,7 @@ namespace Samung_Alpha
         //Networking stuff
         public static TcpClient client = new TcpClient();
         public static IPEndPoint serverEndPoint = new
-            IPEndPoint(IPAddress.Parse("127.0.0.1"), 1450);
+            IPEndPoint(IPAddress.Parse("192.168.1.26"), 1450);
         private static NetworkStream clientStream;
 
         //User information
@@ -240,11 +240,8 @@ namespace Samung_Alpha
                                     Application.Exit();
                                 }
 
-                                userInteractionForm = new Form6(responseFromServer, true, ((IPEndPoint)client.Client.LocalEndPoint).Port + 1);
-                                userInteractionForm.ShowDialog(); //Displaying the user interaction form as server
-
-                                //TODO: Connect the two clients (P2P)
-                                //TODO: Decide what happens after the clients are connected
+                                userInteractionForm = new Form6(responseFromServer, true, ((IPEndPoint)client.Client.LocalEndPoint).Port + 1, ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString());
+                                userInteractionForm.ShowDialog(); //Displaying the user interaction form
                             }
                         }
                     }
@@ -268,6 +265,7 @@ namespace Samung_Alpha
         { //This function connects to the server (creates socket)
             try
             {
+                //client.Connect("samungserver.herokuapp.com", 1450);
                 client.Connect(serverEndPoint);
                 clientStream = client.GetStream();
                 clientStream.ReadTimeout = 60000; //Creating timeout of 1 minute

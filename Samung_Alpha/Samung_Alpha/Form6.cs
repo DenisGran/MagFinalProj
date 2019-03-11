@@ -19,8 +19,6 @@ namespace Samung_Alpha
 {
     public partial class Form6 : Form
     {
-        //Threads
-        //Thread screenSharingThread = new Thread(shareScreen);
 
         //Connection user information
         private static string recievedMessage = "inf,Unknown,127.0.0.1,0";
@@ -34,15 +32,16 @@ namespace Samung_Alpha
         public static IPEndPoint serverEndPoint = null;
         private static NetworkStream clientStream;
         private static int thisServerPort = 0;
-        const string SERVER_IP = "127.0.0.1";
+        string thisUserIP = "127.0.0.1";
 
         //Codes
         private const string screenSharingCode = "scrn";
 
-        public Form6(string theMessageFromServer, bool isThisServer, int thisUserPort = 0)
-        {
+        public Form6(string theMessageFromServer, bool isThisServer, int thisUserPort = 0, string ipOfThisUser = "127.0.0.1")
+        { //Constructor
+
             //Indexes
-            int userUIDIndex = 1;
+            int userUIDIndex = 1; //User who want to interact
             int userIPIndex = 2;
             int userPortIndex = 3;
 
@@ -56,6 +55,7 @@ namespace Samung_Alpha
             userPort = int.Parse(temp[userPortIndex]);
             thisServerPort = thisUserPort;
             isServer = isThisServer;
+            thisUserIP = ipOfThisUser;
 
             InitializeComponent();
         }
@@ -68,7 +68,7 @@ namespace Samung_Alpha
             if (isServer)
             {
                 this.Text = "Creating a server...";
-                serverIPLbl.Text = SERVER_IP;
+                serverIPLbl.Text = thisUserIP;
                 serverPortLbl.Text = thisServerPort.ToString();
                 actualStatusLabel.Text = this.Text;
 
@@ -96,8 +96,6 @@ namespace Samung_Alpha
         {
             // Buffer to store the response bytes.
             Byte[] data = new Byte[1000000]; //TODO CHANGE SIZE LATER
-
-            // String to store the response ASCII representation.
             string responseData = "";
 
             // Read the first batch of the TcpServer response bytes.
@@ -114,35 +112,10 @@ namespace Samung_Alpha
             return responseData;
         }
 
-        private static byte[] readBytes(NetworkStream thisStream)
-        {
-            // Buffer to store the response bytes.
-            Byte[] data = new Byte[1000000]; //TODO CHANGE SIZE LATER
-
-            // Read the first batch of the TcpServer response bytes.
-            try
-            {
-                Int32 bytes = thisStream.Read(data, 0, data.Length);
-            }
-            catch
-            {
-                //In case we couldn't read from stream dont raise an exception thank you
-            }
-
-            return data;
-        }
-
         public static void sendMessage(string messageToServer, NetworkStream thisStream)
         { //This function sends a message 
 
             byte[] buffer = new UnicodeEncoding().GetBytes(messageToServer);
-
-            thisStream.Write(buffer, 0, buffer.Length);
-            thisStream.Flush(); //Send message
-        }
-
-        public static void sendBytes(byte[] buffer, NetworkStream thisStream)
-        { //This function sends bytes
 
             thisStream.Write(buffer, 0, buffer.Length);
             thisStream.Flush(); //Send message
@@ -157,7 +130,8 @@ namespace Samung_Alpha
             PictureBox screenBox = new PictureBox();
             int primaryScreenWidthSize = Screen.PrimaryScreen.Bounds.Width;
             int primaryScreenHeightSize = Screen.PrimaryScreen.Bounds.Height;
-            int twentyFourFramesASecond = 41;
+            int oneSecondInMiliseconds = 1000;
+            int numberOfFramesPerSecond = oneSecondInMiliseconds / 60;
 
             while (!client.Connected)
             { //We wait for the user to connect
@@ -178,12 +152,13 @@ namespace Samung_Alpha
 
                 temp = screenCapture.CaptureScreen(primaryScreenWidthSize, primaryScreenHeightSize);
                 //tempQuery += temp.Width + "x" + temp.Height + "d"; //Skipping this for a test
-                //tempQuery = stringBitmap.bitmapToString(temp);
                 tempQuery = stringBitmap.bitmapToString(temp);
-                screenBox.Image = temp;
+                //screenBox.Image = temp;
 
                 sendMessage(tempQuery, clientStream); //Send screenshot to connected user
-                Thread.Sleep(twentyFourFramesASecond); //So we wont spam it
+
+                screenBox.Image = temp;
+                Thread.Sleep(numberOfFramesPerSecond); //So we wont spam it
             }
         }
 
@@ -198,7 +173,7 @@ namespace Samung_Alpha
             string tempQuery = "";
 
             //---listen at the specified IP and port no.---
-            IPAddress theServerIP = IPAddress.Parse(SERVER_IP);
+            IPAddress theServerIP = IPAddress.Parse(thisUserIP);
             TcpListener listener = new TcpListener(theServerIP, thisServerPort);
 
             this.Invoke((MethodInvoker)delegate
@@ -226,7 +201,7 @@ namespace Samung_Alpha
                 shareScreen();
             }).Start();
 
-                while (client.Connected)  //while the client is connected, we look for incoming messages
+            while (client.Connected)  //while the client is connected, we look for incoming messages
             {
                 tempQuery = readSocket(clientStream);
                 //MessageBox.Show("Recieved: " + tempQuery);
@@ -262,8 +237,14 @@ namespace Samung_Alpha
                 query = readSocket(ns);
                 //tempQuery = compressionClass.Unzip(byteQuery);
 
-                screenBox.Image = stringBitmap.stringToBitmap(query);
+                try
+                {
+                    screenBox.Image = stringBitmap.stringToBitmap(query);
+                }
+                catch
+                {
 
+                }
                 /*if (query.Contains(screenSharingCode))
                 {
                     screenBox.Image = stringBitmap.stringToBitmap(query.Split('d')[1]); //Turning string into the picturebox
