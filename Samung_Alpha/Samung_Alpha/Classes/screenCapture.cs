@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,12 +15,13 @@ namespace Samung_Alpha.Classes
         {
             //Takes screenshot in the size given
 
-            Bitmap bitmap = new Bitmap(defaultScreenWidth, defaultScreenHeight);
+            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(defaultScreenWidth, defaultScreenHeight, PixelFormat.Format24bppRgb);
 
             using (Graphics g = Graphics.FromImage(bitmap))
             {
                 g.CopyFromScreen(Point.Empty, Point.Empty, bitmap.Size);
             }
+
             bitmap.SetResolution(640, 480);
 
             return bitmap;

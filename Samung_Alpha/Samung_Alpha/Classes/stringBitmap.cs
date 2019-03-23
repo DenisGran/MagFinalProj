@@ -14,24 +14,41 @@ namespace Samung_Alpha.Classes
 {
     class stringBitmap
     {
-        public static string bitmapToString(Bitmap sImage)
-        { //Converting bitmap to base64 encoded string
+        public static string bitmapToString(System.Drawing.Bitmap sImage)
+        { //This function converts bitmap to base64 encoded string
 
-            MemoryStream ms = new MemoryStream();
-            sImage.Save(ms, ImageFormat.Jpeg); //TODO TRY DIFFERENT IMAGE FORMATS
+            long compressionLevel = 20;
+
+            MemoryStream ms = GetCompressedBitmap(sImage, compressionLevel);
+            sImage.Save(ms, ImageFormat.Bmp);
             byte[] byteArray = ms.ToArray();
 
-            return Convert.ToBase64String(byteArray); //Converting to base64 and sending
+            return Convert.ToBase64String(byteArray); //Converting to base64 and returning
         }
 
         public static Bitmap stringToBitmap(string base64encoded)
-        { //Base64 encoded string to bitmap
+        { //This function decodes base64 encoded string to bitmap
 
+            System.Drawing.ImageConverter converter = new System.Drawing.ImageConverter();
             byte[] bytes = Convert.FromBase64String(base64encoded);
-            MemoryStream ms = new MemoryStream(bytes);
-            Image final = Image.FromStream(ms);
+            Image final = (Image)converter.ConvertFrom(bytes);
 
             return (Bitmap)final;
+        }
+
+        private static MemoryStream GetCompressedBitmap(System.Drawing.Bitmap bmp, long quality)
+        { //This function compresses the bitmap to the required level
+
+            using (var mss = new MemoryStream())
+            {
+                EncoderParameter qualityParam = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
+                ImageCodecInfo imageCodec = ImageCodecInfo.GetImageEncoders().FirstOrDefault(o => o.FormatID == ImageFormat.Jpeg.Guid);
+                EncoderParameters parameters = new EncoderParameters(1);
+                parameters.Param[0] = qualityParam;
+                bmp.Save(mss, imageCodec, parameters);
+
+                return mss;
+            }
         }
     }
 }

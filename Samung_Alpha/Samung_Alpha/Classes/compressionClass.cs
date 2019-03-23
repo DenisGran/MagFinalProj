@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Samung_Alpha.Classes
 {
     class compressionClass
-    {
+    { //COMPRESSION CLASS DOESNT WORK AS EXCPECTED THEREFORE WE WONT USE IT YET
         private static void CopyTo(Stream src, Stream dest)
         {
             byte[] bytes = new byte[4096];
@@ -22,10 +22,10 @@ namespace Samung_Alpha.Classes
             }
         }
 
-        public static byte[] Zip(string str)
-        { //Compresses string and encrypts to base64
+        public static string Zip(string str)
+        { //Compresses string and encodes it to base64
 
-            var bytes = Encoding.UTF8.GetBytes(str);
+            byte[] bytes = Encoding.Unicode.GetBytes(str);
 
             using (var msi = new MemoryStream(bytes))
             using (var mso = new MemoryStream())
@@ -35,14 +35,14 @@ namespace Samung_Alpha.Classes
                     CopyTo(msi, gs);
                 }
 
-                return mso.ToArray();
+                return Convert.ToBase64String(mso.ToArray());
             }
         }
 
-        public static string Unzip(byte[] bytes)
-        { //Decrypts from base64 and decompresses the string
+        public static string Unzip(string str)
+        { //Decompresses the string and decodes from base64
 
-            //byte[] bytes = Convert.FromBase64String(str);
+            byte[] bytes = Convert.FromBase64String(str);
 
             using (var msi = new MemoryStream(bytes))
             using (var mso = new MemoryStream())
@@ -52,7 +52,7 @@ namespace Samung_Alpha.Classes
                     CopyTo(gs, mso);
                 }
 
-                return Encoding.UTF8.GetString(mso.ToArray());
+                return Encoding.Unicode.GetString(mso.ToArray());
             }
         }
     }
