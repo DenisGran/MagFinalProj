@@ -48,11 +48,13 @@ namespace Samung_Alpha.Classes
                 stopwatch.Start();
                 client = new TcpClient();
 
-                client.Connect(serverEndPoint);
-
                 while (!client.Connected && stopwatch.ElapsedMilliseconds < oneMinuteInMiliseconds * connectionTimout)
                 {
-                    client.Connect(serverEndPoint); //Retrying the connection...
+                    try
+                    {
+                        client.Connect(serverEndPoint); //Retrying the connection...
+                    }
+                    catch { } //If we couldn't connect we dont do anything
                 }
 
                 stopwatch.Stop();

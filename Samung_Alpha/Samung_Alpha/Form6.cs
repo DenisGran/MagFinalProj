@@ -62,7 +62,8 @@ namespace Samung_Alpha
             thisUserLabel.Text += Form1.getUid();
 
             if (isServer)
-            {
+            { //Server initiation here
+
                 this.Text = "Creating a server...";
                 serverIPLbl.Text = thisUserIP;
                 serverPortLbl.Text = thisServerPort.ToString();
@@ -77,7 +78,8 @@ namespace Samung_Alpha
                     });
 
                     if (sessionServer.createServer(thisUserIP, thisServerPort, ref client)) //Trying to create a new server
-                    { //If the user connected successfully
+                    { //If the user connected successfully after server initiated
+
                         PictureBox screenBox = new PictureBox();
 
                         screenBox.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -97,6 +99,8 @@ namespace Samung_Alpha
                             { //Making sure we are still connected
                                 screenBox.Image = sessionServer.shareScreen(client);
                             }
+
+                            MessageBox.Show("User " + userUID + " disconnected");
                         }).Start();
 
                         /* //TODO
@@ -107,13 +111,12 @@ namespace Samung_Alpha
                             serverControl(tempQuery);
                         }
                         */
-
-                        MessageBox.Show("User " + userUID + " disconnected");
                     }
                 }).Start();
             }
             else
-            {
+            { //Client initiation here
+
                 this.Text = "Connecting to: " + userUID;
                 serverIPLbl.Text = userIP;
                 serverPortLbl.Text = userPort.ToString();

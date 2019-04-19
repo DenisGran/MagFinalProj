@@ -22,9 +22,7 @@ namespace Samung_Alpha.Classes
             int numberOfFramesPerSecond = 60;
             int amountOfSleep = oneSecondInMiliseconds / numberOfFramesPerSecond;
             string tempQuery = "";
-            Bitmap tempBitmap = null;
-
-            tempBitmap = sessionServer.getScreen(client);
+            Bitmap tempBitmap = sessionServer.getScreen();
 
             //tempQuery += temp.Width + "x" + temp.Height + "d"; //Skipping this for a test
 
@@ -37,7 +35,7 @@ namespace Samung_Alpha.Classes
             return tempBitmap;
         }
 
-        public static Bitmap getScreen(TcpClient client)
+        public static Bitmap getScreen()
         { //This function takes screenshot and returns it
             
             int primaryScreenWidthSize = Screen.PrimaryScreen.Bounds.Width;

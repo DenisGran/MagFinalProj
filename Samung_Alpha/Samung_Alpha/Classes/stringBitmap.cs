@@ -20,7 +20,7 @@ namespace Samung_Alpha.Classes
             long compressionLevel = 20;
 
             MemoryStream ms = GetCompressedBitmap(sImage, compressionLevel);
-            sImage.Save(ms, ImageFormat.Bmp);
+            sImage.Save(ms, ImageFormat.Jpeg);
             byte[] byteArray = ms.ToArray();
 
             return Convert.ToBase64String(byteArray); //Converting to base64 and returning
