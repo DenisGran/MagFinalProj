@@ -20,7 +20,7 @@ namespace Samung_Alpha.Classes
         { //This function sends a screenshot to the connected user
 
             int numberOfFramesPerSecond = 60;
-            int amountOfSleep = oneSecondInMiliseconds / numberOfFramesPerSecond;
+            int amountOfSleep = oneSecondInMiliseconds;// / numberOfFramesPerSecond;
             string tempQuery = "";
             Bitmap tempBitmap = sessionServer.getScreen();
 

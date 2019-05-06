@@ -19,7 +19,6 @@ namespace Samung_Alpha.Classes
         { //This function handles messages, from and to controlled user
 
             string query = "";
-            Byte[] byteQuery = new Byte[1000000]; //TODO CHANGE SIZE LATER
             NetworkStream ns = client.GetStream();
             System.Drawing.Bitmap returnValue = null;
 
@@ -67,6 +66,7 @@ namespace Samung_Alpha.Classes
                 {
                     clientStream = client.GetStream();
                     clientStream.ReadTimeout = oneMinuteInMiliseconds;
+                    clientStream.WriteTimeout = oneMinuteInMiliseconds;
                     isSucceesful = true;
                 }
             }

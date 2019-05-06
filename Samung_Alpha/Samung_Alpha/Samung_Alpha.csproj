@@ -55,6 +55,7 @@
     <Compile Include="Classes\sessionServer.cs" />
     <Compile Include="Classes\stringBitmap.cs" />
     <Compile Include="Classes\screenCapture.cs" />
+    <Compile Include="Classes\UDPSocket.cs" />
     <Compile Include="Classes\usefulValues.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

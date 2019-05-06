@@ -123,41 +123,42 @@ namespace Samung_Alpha
                 actualStatusLabel.Text = this.Text;
                 serverEndPoint = new IPEndPoint(IPAddress.Parse(userIP), userPort);
 
-                new Thread(() =>
-                {
-                    if (sessionClient.connectToUser(ref client, serverEndPoint, userUID))
-                    { //If we connected successfully to the user
+                if (sessionClient.connectToUser(ref client, serverEndPoint, userUID))
+                { //If we connected successfully to the user
 
-                        //Creating a picturebox for the screen to be displayed
-                        System.Drawing.Bitmap tempImage = null;
-                        PictureBox screenBox = new PictureBox();
+                    //Creating a picturebox for the screen to be displayed
+                    System.Drawing.Bitmap tempImage = null;
+                    PictureBox screenBox = new PictureBox();
 
-                        screenBox.SizeMode = PictureBoxSizeMode.StretchImage;
-                        screenBox.SendToBack();
-                        screenBox.Dock = DockStyle.Fill;
+                    //PictureBox settings
+                    screenBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                    screenBox.SendToBack();
+                    screenBox.Dock = DockStyle.Fill;
 
-                        this.Invoke((MethodInvoker)delegate
+                    //Inform the user that we are connected
+                    this.Text = "Connected to " + userUID;
+                    actualStatusLabel.Text = this.Text;
+                    Controls.Add(screenBox);
+                    clientStream = client.GetStream();
+
+                    while (client.Connected)
+                    { //We are constantly reading from socket
+
+                        tempImage = sessionClient.getImage(client);
+
+                        if (tempImage != null)
                         {
-                            //Inform the user that we are connected
-                            this.Text = "Connected to " + userUID;
-                            actualStatusLabel.Text = this.Text;
-                            Controls.Add(screenBox);
-                        });
-
-                        while (client.Connected)
-                        {
-                            tempImage = sessionClient.getImage(client);
-
-                            if(tempImage != null)
-                            {
-                                screenBox.Image = tempImage;
-                            }
+                            screenBox.Image = tempImage;
                         }
-
-                        MessageBox.Show("User " + userUID + " disconnected.");
-
                     }
-                }).Start();
+
+                    MessageBox.Show("User {" + userUID + "} disconnected.");
+
+                }
+                else
+                {
+                    MessageBox.Show("Couldn't connect to user {" + userUID + "}");
+                }
             }
         }
     }
