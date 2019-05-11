@@ -37,7 +37,7 @@ namespace Samung_Alpha
         //Networking stuff
         public static TcpClient client = new TcpClient();
         public static IPEndPoint serverEndPoint = new
-            IPEndPoint(IPAddress.Parse("192.168.1.26"), 1450);
+            IPEndPoint(IPAddress.Parse("192.168.43.229"), 1450);
         private static NetworkStream clientStream;
 
         //User information
