@@ -19,8 +19,8 @@ namespace Samung_Alpha.Classes
         public static Bitmap shareScreen(TcpClient client)
         { //This function sends a screenshot to the connected user
 
-            int numberOfFramesPerSecond = 60;
-            int amountOfSleep = oneSecondInMiliseconds;// / numberOfFramesPerSecond;
+            int numberOfFramesPerSecond = 1;
+            int amountOfSleep = oneSecondInMiliseconds / numberOfFramesPerSecond;
             string tempQuery = "";
             Bitmap tempBitmap = sessionServer.getScreen();
 

@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Samung_Alpha.Classes.networkStreamFunctions">
+    <Position X="6.5" Y="0.5" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\networkStreamFunctions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Samung_Alpha.Classes.screenCapture">
+    <Position X="0.5" Y="8.25" Width="5.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Classes\screenCapture.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Samung_Alpha.Classes.sessionClient">
+    <Position X="0.5" Y="9.75" Width="5.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\sessionClient.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Samung_Alpha.Classes.sessionServer">
+    <Position X="6.5" Y="8.25" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAIAAAAAACAAAAAAAAQAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\sessionServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Samung_Alpha.Classes.stringBitmap">
+    <Position X="15.25" Y="0.5" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Classes\stringBitmap.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Samung_Alpha.Classes.usefulValues">
+    <Position X="4" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAEEAAAAAAAAAIAAAAAg=</HashCode>
+      <FileName>Classes\usefulValues.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Samung_Alpha.Form1">
+    <Position X="20" Y="0.5" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>gFZBURLEhigAMFyAACCDAAACSJAEAEQAIgw8liBQAJA=</HashCode>
+      <FileName>Form1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Samung_Alpha.Form2">
+    <Position X="11.5" Y="4.25" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAIEAACAAABAAAACAAAACAAAIAgAAEEAAAAIAQAA=</HashCode>
+      <FileName>Form2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Samung_Alpha.Form3">
+    <Position X="11.5" Y="0.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAACAAABAAAACAAAACAAAIAAAAEEAAAAAAAAA=</HashCode>
+      <FileName>Form3.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Samung_Alpha.Form4">
+    <Position X="15.25" Y="2.75" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAACAAABAAAACAAAACAAAIAAAAEEAAAAAAAAA=</HashCode>
+      <FileName>Form4.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Samung_Alpha.Form5">
+    <Position X="0.5" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>gAAAAgQAACABCAAAAACAAAACAAAAQEAAAAAAgAAAAAA=</HashCode>
+      <FileName>Form5.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Samung_Alpha.Form6">
+    <Position X="4" Y="2.5" Width="7.25" />
+    <TypeIdentifier>
+      <HashCode>AAJAAEAAACAAEQQACACCAAACIAABAAIAIAQgBAABQAA=</HashCode>
+      <FileName>Form6.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Samung_Alpha.Form7">
+    <Position X="15.25" Y="6.5" Width="4" />
+    <NestedTypes>
+      <Delegate Name="Samung_Alpha.Form7.ChangeLabelDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Form7.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAFAIAACEEAgCAAAAAAAIAABgAACgAAA=</HashCode>
+      <FileName>Form7.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
