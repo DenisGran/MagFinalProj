@@ -37,11 +37,7 @@ namespace Samung_Alpha
         //Networking stuff
         public static TcpClient client = new TcpClient();
         public static IPEndPoint serverEndPoint = new
-<<<<<<< HEAD
-            IPEndPoint(IPAddress.Parse("192.168.1.27"), 1450);
-=======
-            IPEndPoint(IPAddress.Parse("192.168.43.229"), 1450);
->>>>>>> 5b201a61537e248087fe48334c38e472171cd289
+            IPEndPoint(IPAddress.Parse("127.0.0.1"), 1450);
         private static NetworkStream clientStream;
 
         //User information
@@ -79,37 +75,16 @@ namespace Samung_Alpha
 
         private void Form1_Shown(object sender, EventArgs e)
         {
-            loadingGifBox.Dock = DockStyle.Fill;
 
-            //Adding loading screen
-            loadingLabel.Font = new Font("Arial", ClientRectangle.Width / 80);
-            loadingLabel.TextAlign = ContentAlignment.MiddleCenter;
-            loadingLabel.Dock = DockStyle.Bottom;
-
-            topBar.BringToFront();
-            mnmzBtn.BringToFront();
-            exitBtn.BringToFront();
-            loadingLabel.BringToFront();
-
-            new Thread(() =>
-            {
-                while (!isConnectedToServer || uid == null)
-                { // Waiting for the uid and the connection to the server
-                }
-
-                BeginInvoke((MethodInvoker)delegate () { //Removing the loading screen
-                    loadingLabel.Visible = false;
-                    loadingLabel.Enabled = false;
-                    loadingGifBox.Visible = false;
-                    loadingGifBox.Enabled = false;
-                });
-
-                messagesToQueue(); //Turning on the reading function
-            }).Start();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (sender == null)
+            {
+                throw new ArgumentNullException(nameof(sender));
+            }
+
             connectionThread.Start(); //Connecting to the server
             uidCreationThread.Start(); //Creating a uid
         }
@@ -244,9 +219,11 @@ namespace Samung_Alpha
                                     Application.Exit();
                                 }
 
-                                userInteractionForm = new Form6(responseFromServer, true, ((IPEndPoint)client.Client.LocalEndPoint).Port + 1, ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString());
-                                userInteractionForm.ShowDialog(); //Displaying the user interaction form
-                                responseFromServer = "";
+                                userInteractionForm = new Form6(responseFromServer, true, ((IPEndPoint)client.Client.LocalEndPoint).Port + 1);
+                                userInteractionForm.ShowDialog(); //Displaying the user interaction form as server
+
+                                //TODO: Connect the two clients (P2P)
+                                //TODO: Decide what happens after the clients are connected
                             }
                         }
                     }
