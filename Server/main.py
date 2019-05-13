@@ -6,11 +6,7 @@ os.system("title Samung server")
 print("\n*-Samung server-*")
 print("\nStarting...\n\n")
 
-<<<<<<< HEAD
-bind_ip = '192.168.1.27'
-=======
 bind_ip = '127.0.0.1'
->>>>>>> 5b201a61537e248087fe48334c38e472171cd289
 bind_port = 1450 #Used protocol is 1450
 max_connections = 50 #Maximum connections this computer can handle
 curr_connections = 0

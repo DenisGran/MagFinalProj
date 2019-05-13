@@ -84,10 +84,10 @@
             // button_1
             // 
             this.button_1.Activecolor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(139)))), ((int)(((byte)(87)))));
-            this.button_1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(130)))), ((int)(((byte)(201)))));
+            this.button_1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(139)))), ((int)(((byte)(87)))));
             this.button_1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.button_1.BorderRadius = 0;
-            this.button_1.ButtonText = "bunifuFlatButton1";
+            this.button_1.ButtonText = "Change";
             this.button_1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button_1.DisabledColor = System.Drawing.Color.Gray;
             this.button_1.Iconcolor = System.Drawing.Color.Transparent;
@@ -110,7 +110,7 @@
             this.button_1.selected = false;
             this.button_1.Size = new System.Drawing.Size(241, 48);
             this.button_1.TabIndex = 6;
-            this.button_1.Text = "bunifuFlatButton1";
+            this.button_1.Text = "Change";
             this.button_1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.button_1.Textcolor = System.Drawing.Color.White;
             this.button_1.TextFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

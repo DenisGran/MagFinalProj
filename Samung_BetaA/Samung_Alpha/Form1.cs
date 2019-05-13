@@ -75,16 +75,22 @@ namespace Samung_Alpha
 
         private void Form1_Shown(object sender, EventArgs e)
         {
+            topBar.BringToFront();
+            mnmzBtn.BringToFront();
+            exitBtn.BringToFront();
 
+            new Thread(() =>
+            {
+                while (!isConnectedToServer || uid == null)
+                { // Waiting for the uid and the connection to the server
+                }
+
+                messagesToQueue(); //Turning on the reading function
+            }).Start();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (sender == null)
-            {
-                throw new ArgumentNullException(nameof(sender));
-            }
-
             connectionThread.Start(); //Connecting to the server
             uidCreationThread.Start(); //Creating a uid
         }
@@ -219,11 +225,9 @@ namespace Samung_Alpha
                                     Application.Exit();
                                 }
 
-                                userInteractionForm = new Form6(responseFromServer, true, ((IPEndPoint)client.Client.LocalEndPoint).Port + 1);
-                                userInteractionForm.ShowDialog(); //Displaying the user interaction form as server
-
-                                //TODO: Connect the two clients (P2P)
-                                //TODO: Decide what happens after the clients are connected
+                                userInteractionForm = new Form6(responseFromServer, true, ((IPEndPoint)client.Client.LocalEndPoint).Port + 1, ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString());
+                                userInteractionForm.ShowDialog(); //Displaying the user interaction form
+                                responseFromServer = "";
                             }
                         }
                     }
