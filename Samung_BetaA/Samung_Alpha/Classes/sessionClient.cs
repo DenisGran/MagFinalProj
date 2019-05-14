@@ -8,10 +8,10 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Net;
 using System.Drawing;
-using static Samung_Alpha.Classes.networkStreamFunctions;
-using static Samung_Alpha.Classes.usefulValues;
+using static Desktop_Viewer.Classes.networkStreamFunctions;
+using static Desktop_Viewer.Classes.usefulValues;
 
-namespace Samung_Alpha.Classes
+namespace Desktop_Viewer.Classes
 {
     public class sessionClient
     {

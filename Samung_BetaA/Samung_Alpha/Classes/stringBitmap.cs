@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Samung_Alpha.Classes
+namespace Desktop_Viewer.Classes
 {
     class stringBitmap
     {

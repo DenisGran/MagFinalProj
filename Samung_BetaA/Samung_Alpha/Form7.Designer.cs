@@ -1,4 +1,4 @@
-﻿namespace Samung_Alpha
+﻿namespace Desktop_Viewer
 {
     partial class Form7
     {

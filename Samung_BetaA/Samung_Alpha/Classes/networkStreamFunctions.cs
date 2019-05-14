@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Samung_Alpha.Classes
+namespace Desktop_Viewer.Classes
 {
     public class networkStreamFunctions
     {

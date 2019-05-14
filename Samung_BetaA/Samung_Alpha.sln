@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samung_Alpha", "Samung_Alpha\Samung_Alpha.csproj", "{0B7E4F9F-F5EE-4571-97D1-6BAF98052EA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dekstop_Viewer", "Samung_Alpha\Dekstop_Viewer.csproj", "{0B7E4F9F-F5EE-4571-97D1-6BAF98052EA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

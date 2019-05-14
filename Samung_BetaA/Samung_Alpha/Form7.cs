@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Samung_Alpha
+namespace Desktop_Viewer
 {
     public partial class Form7 : Form
     {

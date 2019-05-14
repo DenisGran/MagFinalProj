@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Samung_Alpha.Classes
+namespace Desktop_Viewer.Classes
 {
     class compressionClass
     {

@@ -117,26 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="user_shape" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\user-shape.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="inbox" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\inbox.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="code_fork_symbol" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\code-fork-symbol.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="smallloadinggif" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\smallloadinggif.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="sitemap" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\sitemap.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\logo.jpeg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="logo1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\logo.jpeg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="sendButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAF8AAAAuCAYAAABOMsWRAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAKMSURBVHhe7ZtPSBRRAMYrioKoqEuHDgV1CSRx21KEsFi1
+        LYmSBU1zd9vA2DwIgRVUJB4sc3ehiA4SVESHSIToUsEGCdmhDhLSHzwYBHuoiEI8SB2++GamsWWnBcuZ
+        d/l+8MHC7OzhN8N7b2e+t2hxKALFTCTfYCTfYCTfYCTfYCTfYMrKXxKux9rm/ag4047tfQmEB+PYlmlV
+        yoSO6KryfAfWxZqwtKbe0y3zV/mrm6LYmU0ife8SHr0bw6uPb1D4/hmiPHREV08nX+LkSA41uaNY33rQ
+        03GJfF6pitPtaLt1Dl9mvjk/Kf6V6dkZdA9nUNUbx7LahiLXRfIpvvpyCsPjeedUsVA8nxpHXe44lu9q
+        9JbPO17i/YPDEeeDEvkc4znUCH/pf3ITG4/F5uRzVcPJVWO8/8z+/IHItS6s2N1oy+eSiDOzCIahsRFs
+        Ssds+VyTcmkkguH9pw8IX0za8ncMJDD1teAcEn7Doacq22bLD2WOWOtRERz8N2zJ5wcRLJJvEMk3iOQb
+        RPINIvkGkXyDSL5BJN8gkm8QyTeI5BtE8g3iyufjTT7mFMHhymfRR52cYJm783vjVrVBBANfXPEFliV/
+        Q/IQBvK3nUPCbx5MPMPWnsO2fBZ56q50atwPiNTdPqw5sM+Wz2xOt2Awf8c5LPzi4cQoKs92FJem2N2p
+        7k/hdWHS+ZpYaNiLqs2m3OayK59hkWfP1RNqMvgAxTcP9WBVNOr6LpLPrGzYa5Vlr4/ed04T/8vjty+s
+        O/5P8UyJfIZD0JauFsRunLJmZtUI5w+rONzXwP0NoQsJz00SnvJ/h1eKS6JwRjtS5ht2obijhzt7vNwy
+        ZeUr/kbyDUbyDUbyDUbyjSWCX5y0n5655mebAAAAAElFTkSuQmCC
+</value>
   </data>
 </root>

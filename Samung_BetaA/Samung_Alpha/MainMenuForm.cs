@@ -17,9 +17,9 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Diagnostics;
 
-namespace Samung_Alpha
+namespace Desktop_Viewer
 {
-    public partial class Form1 : Form
+    public partial class MainMenuForm : Form
     {
         //Threads
         Thread connectionThread = new Thread(startCon);
@@ -37,7 +37,7 @@ namespace Samung_Alpha
         //Networking stuff
         public static TcpClient client = new TcpClient();
         public static IPEndPoint serverEndPoint = new
-            IPEndPoint(IPAddress.Parse("192.168.43.131"), 1450);
+            IPEndPoint(IPAddress.Parse("192.168.1.26"), 1450);
         private static NetworkStream clientStream;
 
         //User information
@@ -64,7 +64,7 @@ namespace Samung_Alpha
 
         //FUNCTIONS START HERE
 
-        public Form1()
+        public MainMenuForm()
         {
             InitializeComponent();
             connectBtn.Enabled = false;
@@ -158,8 +158,8 @@ namespace Samung_Alpha
             //This function always reads messages from socket and puts them in the queue
             //It also manages the connection requests (req message)
 
-            Form5 incomingConnectionForm = null;
-            Form6 userInteractionForm = null;
+            ConnectionRequestForm incomingConnectionForm = null;
+            ScreenSharingForm userInteractionForm = null;
             string responseFromServer = "";
             int requestingUserUidIndex = 1;
             int oneMinuteInMiliseconds = 60000;
@@ -175,7 +175,7 @@ namespace Samung_Alpha
                     if (allowConnections && responseFromServer.Contains(incommingRequest))
                     { //if we allow connections and If this is a request to connect
                         requestingUid = responseFromServer.Split(',')[requestingUserUidIndex]; //Splitting the message with ,
-                        incomingConnectionForm = new Form5(requestingUid);
+                        incomingConnectionForm = new ConnectionRequestForm(requestingUid);
                         incomingConnectionForm.ShowDialog(); //Notifing the user that there is a connection request
                         //If user accepts connection in the form above then isConnectedToUser is going to be set true
 
@@ -225,7 +225,7 @@ namespace Samung_Alpha
                                     Application.Exit();
                                 }
 
-                                userInteractionForm = new Form6(responseFromServer, true, ((IPEndPoint)client.Client.LocalEndPoint).Port + 1, ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString());
+                                userInteractionForm = new ScreenSharingForm(responseFromServer, true, ((IPEndPoint)client.Client.LocalEndPoint).Port + 1, ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString());
                                 userInteractionForm.ShowDialog(); //Displaying the user interaction form
                                 responseFromServer = "";
                             }
@@ -306,12 +306,12 @@ namespace Samung_Alpha
 
         private static bool checkIfSuccess(string thisMessageSuccessCode = successCode) //Because it has default value this is an optional parameter
         { //Function checks if last command was successful or not and returns value
+
             string lastMessageFromQueue = getLastFromQueue(); //Reading the latest message from server
             bool res = false;
 
             if (lastMessageFromQueue.Contains(thisMessageSuccessCode)) // Checking if we have a success
             {
-                //MessageBox.Show(thisMessageSuccessCode); //This is for debug
                 res = true;
             }
             return res;
@@ -374,10 +374,10 @@ namespace Samung_Alpha
         private void connectBtn_Click(object sender, EventArgs e)
         {
             Stopwatch stopwatch = new Stopwatch();
-            Form6 userInteractionForm = null;
+            ScreenSharingForm userInteractionForm = null;
             int oneMinuteInMiliseconds = 60000;
             string responseFromServer = "";
-            Form2 f = new Form2(); //Opening connection form
+            ConnectToUserForm f = new ConnectToUserForm(); //Opening connection form
             f.ShowDialog();
 
             if (isConnectedToUser)
@@ -413,7 +413,7 @@ namespace Samung_Alpha
                     controlMenu(false); //Disabling the menu
                     sessionStatusBtn.Text = "Connected to: " + user2.ToUpper();
 
-                    userInteractionForm = new Form6(responseFromServer, false, 0);
+                    userInteractionForm = new ScreenSharingForm(responseFromServer, false, 0);
                     userInteractionForm.ShowDialog(); //Displaying the user interaction form as client
 
                     //TODO: P2P connection between both clients
@@ -424,7 +424,7 @@ namespace Samung_Alpha
 
         private void signinBtn_Click(object sender, EventArgs e)
         {
-            Form3 f = new Form3();
+            loginForm f = new loginForm();
 
             f.ShowDialog();
 
@@ -445,7 +445,7 @@ namespace Samung_Alpha
         {
             if (loggedIn && !isConnectedToUser) //We won't allow a user to change the password if he is in a session
             {
-                Form4 f = new Form4();
+                ChangePasswordForm f = new ChangePasswordForm();
                 f.ShowDialog();
             }
             else
