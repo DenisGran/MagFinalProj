@@ -101,15 +101,6 @@ namespace Desktop_Viewer
 
                             MessageBox.Show("User " + userUID + " disconnected");
                         }).Start();
-
-                        /* //TODO
-                        while (client.Connected)  //while the client is connected, we look for incoming messages
-                        {
-                            tempQuery = readSocket(clientStream);
-                            //MessageBox.Show("Recieved: " + tempQuery);
-                            serverControl(tempQuery);
-                        }
-                        */
                     }
                 }).Start();
             }
@@ -157,6 +148,15 @@ namespace Desktop_Viewer
 
                     }
                 }).Start();
+            }
+        }
+
+        private void ScreenSharingForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (!isServer)
+            { //If its the controlling computer
+
+                networkStreamFunctions.sendMessage( usefulValues.keyPressingCode + e.KeyData.ToString(), client.GetStream());
             }
         }
     }

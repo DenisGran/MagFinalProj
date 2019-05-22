@@ -32,13 +32,13 @@ namespace Desktop_Viewer
 
         public Form7()
         {
-            InitializeComponent();
+            InitializeComponent();/*
             FormBorderStyle = FormBorderStyle.None;
             WindowState = FormWindowState.Maximized;
             Label.CheckForIllegalCrossThreadCalls = false;
             label2.Text = "";
             Thread t = new Thread(new ThreadStart(TrackMouse));
-            t.Start();
+            t.Start();*/
         }
 
 

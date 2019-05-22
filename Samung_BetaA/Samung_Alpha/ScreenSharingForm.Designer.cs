@@ -100,7 +100,7 @@
             this.actualStatusLabel.TabIndex = 6;
             this.actualStatusLabel.Text = "-STATUS-";
             // 
-            // Form6
+            // ScreenSharingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -113,9 +113,10 @@
             this.Controls.Add(this.yourInformationLbl);
             this.Controls.Add(this.serverInformationLabel);
             this.Controls.Add(this.thisUserLabel);
-            this.Name = "Form6";
+            this.Name = "ScreenSharingForm";
             this.Text = "Connecting...";
             this.Load += new System.EventHandler(this.Form6_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ScreenSharingForm_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

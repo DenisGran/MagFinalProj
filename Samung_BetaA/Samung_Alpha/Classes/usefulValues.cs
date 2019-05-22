@@ -14,5 +14,6 @@ namespace Desktop_Viewer.Classes
 
         //Codes
         public const string screenSharingCode = "scrn";
+        public const string keyPressingCode = "key|";
     }
 }

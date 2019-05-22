@@ -268,6 +268,7 @@ namespace Desktop_Viewer
 
         private static string getLastFromQueue()
         { //Using this function so we will wait for the queue to contain information
+
             while(recievedFromServer.Count() == 0) //Waiting untill there will be a message in the queue
             {
             }

@@ -79,7 +79,7 @@
             this.sendButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
             // 
-            // Form8
+            // ChatForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -88,8 +88,8 @@
             this.Controls.Add(this.sendButton);
             this.Controls.Add(this.writeBox);
             this.Controls.Add(this.chatBox);
-            this.Name = "Form8";
-            this.Text = "Form8";
+            this.Name = "ChatForm";
+            this.Text = "Chat";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form8_KeyDown);
             this.ResumeLayout(false);
 

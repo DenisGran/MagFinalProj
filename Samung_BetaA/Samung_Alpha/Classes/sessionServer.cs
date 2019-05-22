@@ -44,11 +44,6 @@ namespace Desktop_Viewer.Classes
             return screenCapture.CaptureScreen(primaryScreenWidthSize, primaryScreenHeightSize);
         }
 
-        public void serverControl(string query)
-        { //This handles the different code types
-
-        }
-
         public static bool createServer(string thisUserIP, int thisServerPort, ref TcpClient client)
         { //This function creates a server and waits for a user to connect to it
 
