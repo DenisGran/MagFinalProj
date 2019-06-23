@@ -19,7 +19,7 @@ namespace Desktop_Viewer.Classes
         { //This function handles messages, from and to controlled user
 
             string query = "";
-            Byte[] byteQuery = new Byte[1000000]; //TODO CHANGE SIZE LATER
+            Byte[] byteQuery = new Byte[1000000]; //Using a big size
             NetworkStream ns = client.GetStream();
             System.Drawing.Bitmap returnValue = null;
 
@@ -29,7 +29,7 @@ namespace Desktop_Viewer.Classes
             {
                 returnValue = stringBitmap.stringToBitmap(query);
             }
-            catch { } //If there is an exception we just ignore it
+            catch { } //If there is an exception we just ignore it (if the image recieved is corrupted)
 
             return returnValue;
         }

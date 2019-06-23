@@ -13,7 +13,10 @@ namespace Desktop_Viewer.Classes
         public const int oneMinuteInMiliseconds = 60 * oneSecondInMiliseconds;
 
         //Codes
-        public const string screenSharingCode = "scrn";
-        public const string keyPressingCode = "key|";
+        public const char keyCode = 'K';
+        public const char chatCode = 'C';
+        public const char mouseCode = 'M';
+        public const char leftMouseCode = 'L';
+        public const char rightMouseCode = 'R';
     }
 }

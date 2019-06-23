@@ -12,7 +12,7 @@ namespace Desktop_Viewer.Classes
         public static string readSocket(NetworkStream thisStream)
         {
             // Buffer to store the response bytes.
-            Byte[] data = new Byte[1000000]; //TODO CHANGE SIZE LATER
+            Byte[] data = new Byte[1000000];
             string responseData = "";
 
             // Read the first batch of the TcpServer response bytes.

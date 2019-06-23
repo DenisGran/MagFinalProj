@@ -387,8 +387,6 @@ namespace Desktop_Viewer
 
                 //Now we wait for inf message
                 responseFromServer = getLastFromQueue();
-                //Note that if the user is waiting for an inf message and other client tries to connect to this user-
-                //there will be issues. TODO- Check that and fix that
 
                 stopwatch.Start(); //Waiting for inf message for 60 seconds (timeout of 60 seconds)
 
@@ -416,9 +414,6 @@ namespace Desktop_Viewer
 
                     userInteractionForm = new ScreenSharingForm(responseFromServer, false, 0);
                     userInteractionForm.ShowDialog(); //Displaying the user interaction form as client
-
-                    //TODO: P2P connection between both clients
-                    //TODO: Add disconnect button that appears after the user is connected
                 }
             }
         }
