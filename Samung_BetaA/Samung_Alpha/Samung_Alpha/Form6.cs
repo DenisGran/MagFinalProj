@@ -12,12 +12,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Desktop_Viewer.Classes;
-using static Desktop_Viewer.Classes.usefulValues;
+using Samung_Alpha.Classes;
 
-namespace Desktop_Viewer
+namespace Samung_Alpha
 {
-    public partial class ScreenSharingForm : Form
+    public partial class Form6 : Form
     {
 
         //Connection user information
@@ -30,17 +29,11 @@ namespace Desktop_Viewer
         //Networking stuff
         public static TcpClient client;
         public static IPEndPoint serverEndPoint = null;
+        private static NetworkStream clientStream;
         private static int thisServerPort = 0;
         private static string thisUserIP = "127.0.0.1";
 
-        //Threads
-        Thread executingThread = new Thread(()=>sessionServer.readFromSocketAndExecute(client));
-
-        //Useful variables
-        PictureBox screenBox = new PictureBox();
-        static bool sendMouseMovement = true;
-
-        public ScreenSharingForm(string theMessageFromServer, bool isThisServer, int thisUserPort = 0, string ipOfThisUser = "127.0.0.1")
+        public Form6(string theMessageFromServer, bool isThisServer, int thisUserPort = 0, string ipOfThisUser = "127.0.0.1")
         { //Constructor
 
             //Indexes
@@ -66,14 +59,11 @@ namespace Desktop_Viewer
         private void Form6_Load(object sender, EventArgs e)
         { //We try to connect to the user/create server
 
-            thisUserLabel.Text += MainMenuForm.getUid();
-
-            screenBox.SizeMode = PictureBoxSizeMode.StretchImage;
-            screenBox.Dock = DockStyle.Fill;
-            screenBox.SendToBack();
+            thisUserLabel.Text += Form1.getUid();
 
             if (isServer)
             { //Server initiation here
+
                 this.Text = "Creating a server...";
                 serverIPLbl.Text = thisUserIP;
                 serverPortLbl.Text = thisServerPort.ToString();
@@ -90,7 +80,11 @@ namespace Desktop_Viewer
                     if (sessionServer.createServer(thisUserIP, thisServerPort, ref client)) //Trying to create a new server
                     { //If the user connected successfully after server initiated
 
-                        executingThread.Start();
+                        PictureBox screenBox = new PictureBox();
+
+                        screenBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                        screenBox.SendToBack();
+                        screenBox.Dock = DockStyle.Fill;
 
                         this.Invoke((MethodInvoker)delegate
                         {
@@ -108,6 +102,15 @@ namespace Desktop_Viewer
 
                             MessageBox.Show("User " + userUID + " disconnected");
                         }).Start();
+
+                        /* //TODO
+                        while (client.Connected)  //while the client is connected, we look for incoming messages
+                        {
+                            tempQuery = readSocket(clientStream);
+                            //MessageBox.Show("Recieved: " + tempQuery);
+                            serverControl(tempQuery);
+                        }
+                        */
                     }
                 }).Start();
             }
@@ -127,6 +130,11 @@ namespace Desktop_Viewer
 
                         //Creating a picturebox for the screen to be displayed
                         System.Drawing.Bitmap tempImage = null;
+                        PictureBox screenBox = new PictureBox();
+
+                        screenBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                        screenBox.SendToBack();
+                        screenBox.Dock = DockStyle.Fill;
 
                         this.Invoke((MethodInvoker)delegate
                         {
@@ -135,9 +143,6 @@ namespace Desktop_Viewer
                             actualStatusLabel.Text = this.Text;
                             Controls.Add(screenBox);
                         });
-
-                        screenBox.MouseMove += new MouseEventHandler(screenBox_OnMouseMove); //For mouse movement
-                        screenBox.MouseClick += new MouseEventHandler(screenBox_OnMouseClick); //Mouse click events
 
                         while (client.Connected)
                         {
@@ -153,65 +158,6 @@ namespace Desktop_Viewer
 
                     }
                 }).Start();
-            }
-        }
-
-        private void ScreenSharingForm_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (!isServer)
-            { //If its the controlling computer
-
-                networkStreamFunctions.sendMessage( usefulValues.keyCode + e.KeyData.ToString(), client.GetStream());
-            }
-        }
-
-        public void screenBox_OnMouseMove(object sender, object e)
-        {
-            if (screenBox.Image != null && sendMouseMovement)
-            {
-                int numberOfFramesPerSecond = 1;
-
-                sendMouseMovement = false;
-                networkStreamFunctions.sendMessage(usefulValues.mouseCode + new Point((int)((Cursor.Position.X - this.Location.X) * (float)screenBox.Image.Width / screenBox.Size.Width), (int)((Cursor.Position.Y - this.Location.Y) * (float)screenBox.Image.Height / screenBox.Size.Height)).ToString(), client.GetStream());
-                //Calculating Mouse position based on ratio
-
-                Thread.Sleep(oneSecondInMiliseconds / numberOfFramesPerSecond); //Sleeping according to the amount of fps
-                sendMouseMovement = true;
-            }
-        }
-
-        public void screenBox_OnMouseClick(object sender, MouseEventArgs e)
-        {
-            if (screenBox.Image != null)
-            {
-                switch (e.Button)
-                {
-                    case MouseButtons.Left:
-                        try
-                        {
-                            networkStreamFunctions.sendMessage(usefulValues.leftMouseCode.ToString() + "leftmousebutton", client.GetStream());
-                            //Sending left mouse click
-                            //Also adding the text "leftmousebutton" because the we can't send one character over the stream 
-                        }
-                        catch
-                        {
-                            //This may fail so we will catch the exception
-                        }
-                        break;
-
-                    case MouseButtons.Right:
-                        try
-                        {
-                            networkStreamFunctions.sendMessage(usefulValues.rightMouseCode.ToString() + "rightmousebutton", client.GetStream());
-                            //Sending right mouse click
-                            //Also adding the text "rightmousebutton" because the we can't send one character over the stream 
-                        }
-                        catch
-                        {
-                            //This may fail so we will catch the exception
-                        }
-                        break;
-                }
             }
         }
     }

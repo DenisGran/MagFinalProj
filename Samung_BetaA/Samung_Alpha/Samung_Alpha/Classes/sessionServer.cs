@@ -102,12 +102,7 @@ namespace Desktop_Viewer.Classes
                     }
                     else if (recievedText[firstIndex] == usefulValues.keyCode)
                     {
-                        try
-                        {
-                            SendKeys.SendWait("{" + temp + "}"); //Press the recieved key
-                        }
-                        catch
-                        { }
+                        SendKeys.SendWait(temp); //Press the recieved key
                     }
                     else if (recievedText[firstIndex] == usefulValues.mouseCode)
                     {

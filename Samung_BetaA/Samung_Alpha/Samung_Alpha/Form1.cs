@@ -17,9 +17,9 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Diagnostics;
 
-namespace Desktop_Viewer
+namespace Samung_Alpha
 {
-    public partial class MainMenuForm : Form
+    public partial class Form1 : Form
     {
         //Threads
         Thread connectionThread = new Thread(startCon);
@@ -37,7 +37,7 @@ namespace Desktop_Viewer
         //Networking stuff
         public static TcpClient client = new TcpClient();
         public static IPEndPoint serverEndPoint = new
-            IPEndPoint(IPAddress.Parse("192.168.1.26"), 1450);
+            IPEndPoint(IPAddress.Parse("192.168.43.131"), 1450);
         private static NetworkStream clientStream;
 
         //User information
@@ -64,7 +64,7 @@ namespace Desktop_Viewer
 
         //FUNCTIONS START HERE
 
-        public MainMenuForm()
+        public Form1()
         {
             InitializeComponent();
             connectBtn.Enabled = false;
@@ -158,8 +158,8 @@ namespace Desktop_Viewer
             //This function always reads messages from socket and puts them in the queue
             //It also manages the connection requests (req message)
 
-            ConnectionRequestForm incomingConnectionForm = null;
-            ScreenSharingForm userInteractionForm = null;
+            Form5 incomingConnectionForm = null;
+            Form6 userInteractionForm = null;
             string responseFromServer = "";
             int requestingUserUidIndex = 1;
             int oneMinuteInMiliseconds = 60000;
@@ -175,7 +175,7 @@ namespace Desktop_Viewer
                     if (allowConnections && responseFromServer.Contains(incommingRequest))
                     { //if we allow connections and If this is a request to connect
                         requestingUid = responseFromServer.Split(',')[requestingUserUidIndex]; //Splitting the message with ,
-                        incomingConnectionForm = new ConnectionRequestForm(requestingUid);
+                        incomingConnectionForm = new Form5(requestingUid);
                         incomingConnectionForm.ShowDialog(); //Notifing the user that there is a connection request
                         //If user accepts connection in the form above then isConnectedToUser is going to be set true
 
@@ -225,7 +225,7 @@ namespace Desktop_Viewer
                                     Application.Exit();
                                 }
 
-                                userInteractionForm = new ScreenSharingForm(responseFromServer, true, ((IPEndPoint)client.Client.LocalEndPoint).Port + 1, ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString());
+                                userInteractionForm = new Form6(responseFromServer, true, ((IPEndPoint)client.Client.LocalEndPoint).Port + 1, ((IPEndPoint)client.Client.LocalEndPoint).Address.ToString());
                                 userInteractionForm.ShowDialog(); //Displaying the user interaction form
                                 responseFromServer = "";
                             }
@@ -268,7 +268,6 @@ namespace Desktop_Viewer
 
         private static string getLastFromQueue()
         { //Using this function so we will wait for the queue to contain information
-
             while(recievedFromServer.Count() == 0) //Waiting untill there will be a message in the queue
             {
             }
@@ -277,7 +276,6 @@ namespace Desktop_Viewer
 
         public static void sendToServer(string messageToServer)
         { //This function sends a message to the server
-
             byte[] buffer = new ASCIIEncoding().GetBytes(messageToServer);
 
             clientStream.Write(buffer, 0, buffer.Length);
@@ -308,12 +306,12 @@ namespace Desktop_Viewer
 
         private static bool checkIfSuccess(string thisMessageSuccessCode = successCode) //Because it has default value this is an optional parameter
         { //Function checks if last command was successful or not and returns value
-
             string lastMessageFromQueue = getLastFromQueue(); //Reading the latest message from server
             bool res = false;
 
             if (lastMessageFromQueue.Contains(thisMessageSuccessCode)) // Checking if we have a success
             {
+                //MessageBox.Show(thisMessageSuccessCode); //This is for debug
                 res = true;
             }
             return res;
@@ -376,10 +374,10 @@ namespace Desktop_Viewer
         private void connectBtn_Click(object sender, EventArgs e)
         {
             Stopwatch stopwatch = new Stopwatch();
-            ScreenSharingForm userInteractionForm = null;
+            Form6 userInteractionForm = null;
             int oneMinuteInMiliseconds = 60000;
             string responseFromServer = "";
-            ConnectToUserForm f = new ConnectToUserForm(); //Opening connection form
+            Form2 f = new Form2(); //Opening connection form
             f.ShowDialog();
 
             if (isConnectedToUser)
@@ -388,6 +386,8 @@ namespace Desktop_Viewer
 
                 //Now we wait for inf message
                 responseFromServer = getLastFromQueue();
+                //Note that if the user is waiting for an inf message and other client tries to connect to this user-
+                //there will be issues. TODO- Check that and fix that
 
                 stopwatch.Start(); //Waiting for inf message for 60 seconds (timeout of 60 seconds)
 
@@ -413,15 +413,18 @@ namespace Desktop_Viewer
                     controlMenu(false); //Disabling the menu
                     sessionStatusBtn.Text = "Connected to: " + user2.ToUpper();
 
-                    userInteractionForm = new ScreenSharingForm(responseFromServer, false, 0);
+                    userInteractionForm = new Form6(responseFromServer, false, 0);
                     userInteractionForm.ShowDialog(); //Displaying the user interaction form as client
+
+                    //TODO: P2P connection between both clients
+                    //TODO: Add disconnect button that appears after the user is connected
                 }
             }
         }
 
         private void signinBtn_Click(object sender, EventArgs e)
         {
-            loginForm f = new loginForm();
+            Form3 f = new Form3();
 
             f.ShowDialog();
 
@@ -442,7 +445,7 @@ namespace Desktop_Viewer
         {
             if (loggedIn && !isConnectedToUser) //We won't allow a user to change the password if he is in a session
             {
-                ChangePasswordForm f = new ChangePasswordForm();
+                Form4 f = new Form4();
                 f.ShowDialog();
             }
             else

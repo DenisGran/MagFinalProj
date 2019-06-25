@@ -13,7 +13,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Desktop_Viewer.Classes;
-using static Desktop_Viewer.Classes.usefulValues;
 
 namespace Desktop_Viewer
 {
@@ -38,7 +37,6 @@ namespace Desktop_Viewer
 
         //Useful variables
         PictureBox screenBox = new PictureBox();
-        static bool sendMouseMovement = true;
 
         public ScreenSharingForm(string theMessageFromServer, bool isThisServer, int thisUserPort = 0, string ipOfThisUser = "127.0.0.1")
         { //Constructor
@@ -167,16 +165,10 @@ namespace Desktop_Viewer
 
         public void screenBox_OnMouseMove(object sender, object e)
         {
-            if (screenBox.Image != null && sendMouseMovement)
+            if (screenBox.Image != null)
             {
-                int numberOfFramesPerSecond = 1;
-
-                sendMouseMovement = false;
                 networkStreamFunctions.sendMessage(usefulValues.mouseCode + new Point((int)((Cursor.Position.X - this.Location.X) * (float)screenBox.Image.Width / screenBox.Size.Width), (int)((Cursor.Position.Y - this.Location.Y) * (float)screenBox.Image.Height / screenBox.Size.Height)).ToString(), client.GetStream());
                 //Calculating Mouse position based on ratio
-
-                Thread.Sleep(oneSecondInMiliseconds / numberOfFramesPerSecond); //Sleeping according to the amount of fps
-                sendMouseMovement = true;
             }
         }
 
